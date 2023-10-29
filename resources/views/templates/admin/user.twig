@@ -1,0 +1,140 @@
+{% extends "/layouts/admin.twig" %}
+
+{% set active_menu = 'users' %}
+
+{% set xdata %}
+user({{ (user is defined ? user : {})|json_encode|raw }})
+{% endset %}
+
+{% set headerInfoText %}
+<a href="admin/users"
+  class="inline-flex items-center gap-2 text-sm transition-all duration-300 text-content hover:no-underline hover:gap-0 group/back">
+  <i
+    class="text-lg transition duration-75 ti ti-arrow-left group-hover/back:opacity-0 group-hover/back:-translate-x-2"></i>
+  Back to users
+</a>
+{% endset %}
+
+{% block title (user is defined ? 'Edit user' : 'New user')|title %}
+
+{% block template %}
+<form class="flex flex-col max-w-3xl gap-8" @submit.prevent="submit">
+
+  <div>
+    <h1 class="text-xl font-bold">
+      <span x-show="!user.id">Add new user</span>
+      <span x-show="user.id">
+        Edit user:
+        <span class="font-normal text-intermediate-content"
+          x-text="`${user.first_name} ${user.last_name}`"></span>
+      </span>
+    </h1>
+
+    <template x-if="user.id">
+      <code is="resource-id" x-text="user.id"></code>
+    </template>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <section
+      class="grid grid-cols-2 gap-6 px-16 py-12 border rounded-xl border-line-dimmed">
+
+      <div class="col-span-2">
+        <h2 class="text-lg font-bold">Profile</h2>
+      </div>
+
+      <div>
+        <label for="first_name" class="text-sm font-semibold">First name</label>
+
+        <input type="text" id="first_name" class="mt-2 input" autocomplete="off"
+          :placeholder="user.first_name || 'User\'s first name'"
+          x-model="model.first_name" />
+      </div>
+
+      <div>
+        <label for="last_name" class="text-sm font-semibold">Last name</label>
+
+        <input type="text" id="last_name" class="mt-2 input" autocomplete="off"
+          :placeholder="user.last_name || 'User\'s last name'"
+          x-model="model.last_name" />
+      </div>
+
+      <div class="col-span-2">
+        <label for="email" class="text-sm font-semibold">Email</label>
+
+        <input type="text" id="email" class="mt-2 input" autocomplete="off"
+          :placeholder="user.email || 'User\'s email'" x-model="model.email"
+          :disabled="user.id ? true : false" />
+      </div>
+
+    </section>
+
+    <template x-if="model.id != '{{ auth_user.id }}'">
+      <section
+        class="grid grid-cols-1 gap-6 px-16 py-12 border rounded-xl border-line-dimmed">
+
+        <h2 class="text-lg font-bold">Account details</h2>
+
+        <div>
+          <label class="text-sm font-semibold">Role</label>
+
+          <div class="flex items-center gap-2 mt-2">
+            <label>
+              <input type="radio" name="role" value="1" class="radio-button"
+                x-model="model.role" :checked="model.role == 1" />
+
+              <span>
+                Admin
+              </span>
+            </label>
+
+            <label>
+              <input type="radio" name="role" value="0" class="radio-button"
+                x-model="model.role" :checked="model.role == 0" />
+
+              <span>
+                User
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div
+          class="flex items-center justify-between p-3 rounded-lg bg-intermediate">
+          Status
+
+          <label class="inline-flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="status" class="hidden peer"
+              :checked="model.status == 1" x-model="model.status">
+
+            <span
+              class="h-6 w-10 rounded-3xl bg-line relative block peer-checked:bg-success transition-all after:h-5 after:w-5 after:top-0.5 after:absolute after:left-0 after:ml-0.5 after:transition-all after:rounded-full after:bg-white peer-checked:after:left-4"></span>
+
+            <span class="text-content-dimmed peer-checked:hidden">
+              Inactive
+            </span>
+
+            <span class="hidden text-success peer-checked:inline">
+              Active
+            </span>
+          </label>
+        </div>
+      </section>
+    </template>
+  </div>
+
+  <div class="flex justify-end gap-4">
+    <a href="admin/users" class="button button-outline">Cancel</a>
+
+    <button type="submit" class="button" x-ref="submit"
+      :disabled="!isSubmitable()" :processing="isProcessing">
+
+      {% include "/snippets/spinner.twig" %}
+
+      <span x-show="!user.id">Create user</span>
+      <span x-show="user.id">Update user</span>
+
+    </button>
+  </div>
+</form>
+{% endblock %}

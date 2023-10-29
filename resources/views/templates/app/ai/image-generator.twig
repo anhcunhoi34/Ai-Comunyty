@@ -1,0 +1,218 @@
+{% extends "/layouts/app.twig" %}
+
+{% set xdata = "ai" %}
+{% block title (preset is defined ? preset.title : 'AI Writer')|title %}
+
+{% block template %}
+
+{% embed "/sections/page-header.twig" with {  back: 'app' } %}
+
+{% block title 'Image Generator' %}
+{% block desc 'Unlock your creativity, capable of producing breathtaking visuals within seconds.' %}
+
+
+{% block badge %}
+<span
+  :title="`${ {{auth_user.image_credit?? 'null' }} == null ? 'Unlimited' : `{{auth_user.image_credit}}` } images`"
+  class="inline-flex items-center gap-1 px-2 py-1 text-sm rounded-lg bg-line text-intermediate-content">
+  <i class="text-base ti ti-photo"></i>
+
+  <strong
+    x-text="{{ auth_user.image_credit?? 'null' }} == null ? 'Unlimited' : Intl.NumberFormat(document.documentElement.lang, { notation: 'compact' }).format(`{{ auth_user.image_credit }}`)"></strong>
+  credits remaining
+</span>
+{% endblock %}
+{% endembed %}
+
+<div class="flex items-start gap-8 mt-4">
+  <section
+    class="sticky p-6 border top-4 w-96 border-line-dimmed rounded-xl shrink-0">
+    <h2 class="text-lg font-bold">Prompts</h2>
+
+    <form class="grid grid-cols-1 gap-6 mt-4"
+      @submit.prevent="showGallery=true; submit('/image-generator/{{ preset.id ?? ""  }}')"
+      x-ref="form">
+
+      <div>
+        <label for="prompt" class="text-sm font-semibold">
+          Description
+
+          <i class="ti ti-help-square-rounded-filled help"
+            title="The more details you provide, the better the result will be."
+            data-tooltip></i>
+        </label>
+
+        <textarea rows="8" id="prompt" name="prompt"
+          placeholder="Gorilla driving a car" class="mt-2 input"
+          autocomplete="off" required></textarea>
+      </div>
+
+      <div>
+        <label for="size" class="text-sm font-semibold">Image resolution</label>
+
+        <div class="flex flex-wrap items-center gap-2 mt-2">
+          {% set sizes = [256, 512, 1024] %}
+
+          {% for size in sizes %}
+          <label>
+            <input type="radio" name="tone" value="{{ size }}"
+              class="radio-button" {{ size == 1024 ? 'checked' : '' }} />
+
+            <span>{{ size ~ 'x' ~ size }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div>
+        <label for="art" class="text-sm font-semibold">Art style</label>
+
+        <select id="art" name="art" class="mt-2 input">
+          <option value="">None</option>
+
+          <option value="Pop art">Pop art</option>
+          <option value="Surrealism">Surrealism</option>
+          <option value="Abstract expressionism">Abstract expressionism</option>
+          <option value="Realism">Realism</option>
+          <option value="Fauvism">Fauvism</option>
+          <option value="Art Deco">Art Deco</option>
+          <option value="Futurism">Futurism</option>
+          <option value="Minimalism">Minimalism</option>
+          <option value="Expressionism">Expressionism</option>
+          <option value="Contemporary art">Contemporary art</option>
+          <option value="Abstract art">Abstract art</option>
+          <option value="Constructivism">Constructivism</option>
+          <option value="Rococo">Rococo</option>
+          <option value="Impressionism">Impressionism</option>
+          <option value="Art Nouveau">Art Nouveau</option>
+          <option value="Modern art">Modern art</option>
+          <option value="Conceptual art">Conceptual art</option>
+          <option value="Cubism">Cubism</option>
+          <option value="Romanticism">Romanticism</option>
+          <option value="Post-Impressionism">Post-Impressionism</option>
+          <option value="Baroque">Baroque</option>
+          <option value="Bauhaus">Bauhaus</option>
+          <option value="Photorealism">Photorealism</option>
+          <option value="3D render">3D Render</option>
+          <option value="Anime">Anime</option>
+          <option value="Cartoon">Cartoon</option>
+          <option value="Line art">Line Art</option>
+          <option value="Clay">Clay</option>
+          <option value="Dadaism">Dadaism</option>
+          <option value="Neoclassicism">Neoclassicism</option>
+          <option value="cyberpunk">Cyberpunk</option>
+          <option value="retro">Retro</option>
+          <option value="glitchcore">Glitchcore</option>
+          <option value="Ballpoint Pen Drawing">Ballpoint Pen Drawing</option>
+          <option value="Isometric">Isometric</option>
+          <option value="Origami">Origami</option>
+          <option value="Pencil Drawing">Pencil Drawing</option>
+          <option value="Sticker">Sticker</option>
+          <option value="Low Poly">Low Poly</option>
+          <option value="Pixel">Pixel</option>
+          <option value="Renaissance">Renaissance</option>
+          <option value="Watercolor">Watercolor</option>
+          <option value="Pointillism">Pointillism</option>
+          <option value="Steampunk">Steampunk</option>
+          <option value="Ukiyo">Ukiyo</option>
+          <option value="Vaporwave">Vaporwave</option>
+          <option value="Vector">Vector</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="lightning" class="text-sm font-semibold">Lightning
+          Style</label>
+
+        <select id="lightning" name="lightning" class="mt-2 input">
+          <option value="">None</option>
+          <option value="ambient">Ambient</option>
+          <option value="backlight">Backlight</option>
+          <option value="blue_hour">Blue Hour</option>
+          <option value="cinematic">Cinematic</option>
+          <option value="cold">Cold</option>
+          <option value="dramatic">Dramatic</option>
+          <option value="foggy">Foggy</option>
+          <option value="golden_hour">Golden Hour</option>
+          <option value="hard">Hard</option>
+          <option value="natural">Natural</option>
+          <option value="neon">Neon</option>
+          <option value="studio">Studio</option>
+          <option value="warm">Warm</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="mood" class="text-sm font-semibold">Mood</label>
+
+        <select id="mood" name="mood" class="mt-2 input">
+          <option value="">None</option>
+          <option value="aggressive">Aggressive</option>
+          <option value="angry">Angry</option>
+          <option value="boring">Boring</option>
+          <option value="bright">Bright</option>
+          <option value="calm">Calm</option>
+          <option value="cheerful">Cheerful</option>
+          <option value="chilling">Chilling</option>
+          <option value="colorful">Colorful</option>
+          <option value="dark">Dark</option>
+          <option value="neutral">Neutral</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="n" class="text-sm font-semibold">Number of images</label>
+
+        <input type="number" name="n" id="n" min="1" max="24" class="mt-2 input"
+          value="1">
+      </div>
+
+      <div>
+        <button type="submit" class="w-full button" :disabled="!isSubmitable"
+          :processing="isProcessing">
+
+          <svg width="24" height="24" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg" class="spinner">
+            <style>
+              .spinner_S1WN {
+                animation: spinner_MGfb .8s linear infinite;
+                animation-delay: -.8s
+              }
+
+              .spinner_Km9P {
+                animation-delay: -.65s
+              }
+
+              .spinner_JApP {
+                animation-delay: -.5s
+              }
+
+              @keyframes spinner_MGfb {
+
+                93.75%,
+                100% {
+                  opacity: .2
+                }
+              }
+            </style>
+            <circle class="spinner_S1WN" cx="4" cy="12" r="3" />
+            <circle class="spinner_S1WN spinner_Km9P" cx="12" cy="12" r="3" />
+            <circle class="spinner_S1WN spinner_JApP" cx="20" cy="12" r="3" />
+          </svg>
+
+          <span class="inline-flex items-center gap-1" x-show="!isProcessing">
+            <i class="ti ti-sparkles"></i>
+            Generate
+          </span>
+
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <div class="flex flex-col gap-4 grow" x-cloak>
+    {% include "sections/ai-result.twig" %}
+  </div>
+
+</div>
+{% endblock %}

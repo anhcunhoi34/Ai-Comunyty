@@ -1,0 +1,151 @@
+<!doctype html>
+<html
+  lang="{{ auth_user is defined and auth_user.language ? auth_user.language : 'en-US' }}"
+  data-mode="light" class="group/html">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="">
+
+  <base href="/">
+
+  <link rel="icon" type="image/x-icon"
+    href="{{ option.brand.favicon ?? 'assets/favicon.ico' }}">
+
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.36.0/tabler-icons.min.css" />
+  <link rel="stylesheet" href="assets/app.css?v={{ version }}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif:wght@100;300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      /* Typography */
+      --font-family-primary: 'Inter', sans-serif;
+      --font-family-secondary: 'Inter', sans-serif;
+      --font-family-editor: 'Inter', sans-serif;
+      --font-family-editor-heading: 'Noto Serif';
+
+      /* Theme colors */
+      /* Primary background color */
+      --color-main: 255 255 255;
+
+      /* Solid/Gray/Dark/Gray - 700 (Dark) */
+      --color-content: 36 40 44;
+
+      /* Solid/Gray/Dark/Gray - 200 (Dark) */
+      --color-content-dimmed: 172 174 175;
+
+      /* Solid/Gray/Dark/Gray - 50 (Dark) */
+      --color-line: 227 228 228;
+
+      /* Solid/Gray/Dark/Gray - 25 (Dark) state: normal */
+      --color-line-dimmed: 245 246 246;
+
+      /* Solid/Primary/Main-1/Brand - 700 V1 */
+      --color-accent: 211 243 107;
+
+      /* Solid/Gray/Dark/Gray - 700 (Dark) */
+      --color-accent-content: 36 40 44;
+
+      /* Solid/Gray/Dark/Gray - 700 (Dark) */
+      --color-button: 36 40 44;
+
+      /* Solid/Neutral/White/White - 100% */
+      --color-button-content: 255 255 255;
+
+      /* Solid/Gray/Dark/Gray - 25 (Dark) */
+      --color-intermediate: 245 246 246;
+
+      /* Secondary text color (sidebar menu) */
+      /* Solid/Gray/Dark/Gray - 500 (Dark) */
+      --color-intermediate-content: 90 93 96;
+
+      --color-gradient-from: 231 255 155;
+      --color-gradient-to: 207 230 255;
+
+      /* --------------- */
+      /* Solid/Notifications/Information/Info - 700 */
+      --color-info: 0 166 251;
+      /* Solid/Notifications/Success/Success - 700 */
+      --color-success: 48 200 98;
+      /* Solid/Notifications/Fail/Fail - 700 */
+      --color-failure: 254 81 87;
+      /* Solid/Notifications/Warning/Warning - 700 */
+      --color-alert: 254 212 73;
+    }
+
+    :root[data-mode="dark"] {
+      /* Theme colors */
+      /* Solid/Gray/Dark/Gray - 700 (Dark) */
+      --color-main: 36 40 44;
+
+      /*  Solid/Gray/Dark/Gray - 50 (Dark) */
+      --color-content: 227 228 228;
+
+      /* Solid/Gray/Dark/Gray - 400 (Dark) */
+      --color-content-dimmed: 118 120 123;
+
+      /* Solid/Gray/Dark/Gray - 400 (Dark) */
+      --color-line: 118 120 123;
+
+      /* Solid/Gray/Dark/Gray - 600 (Dark) */
+      --color-line-dimmed: 63 66 70;
+
+
+      /* Solid/Gray/Dark/Gray - 800 (Dark) */
+      --color-intermediate: 22 25 27;
+
+      /* Solid/Gray/Dark/Gray - 200 (Dark) */
+      --color-intermediate-content: 172 174 175;
+    }
+  </style>
+
+  <title>
+    {% block title %}{% endblock %}
+    {{ block('title') is empty ? '' : ' | ' }}
+    {{ option.site.name ?? null }}
+  </title>
+
+  <script>
+    window.currency = JSON.parse('{{currency|json_encode|raw}}');
+
+    if (!('mode' in localStorage) || ['dark', 'light'].indexOf(localStorage.mode) === -1) {
+      localStorage.mode = window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : document.documentElement.dataset.mode;
+    }
+
+    document.documentElement.dataset.mode = localStorage.mode;
+  </script>
+</head>
+
+<body
+  class="bg-main text-content max-h-screen font-content data-[overlay]:overflow-hidden data-[overlay]:pr-[var(--scrollbar-width)] group/body"
+  x-data='{{ xdata is defined ? xdata : "" }}'>
+
+  <overlay-element
+    class="fixed top-0 left-0 h-full w-full z-40 bg-[rgba(36,40,44,0.50)] transition-al opacity-0 invisible group-data-[overlay]/body:visible group-data-[overlay]/body:opacity-100 group-data-[overlay]/body:backdrop-blur-lg"></overlay-element>
+
+  <div
+    class="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] p-8 rounded-xl bg-main dark:bg-intermediate invisible transition-all opacity-0 group-data-[overlay=modal]/body:visible group-data-[overlay=modal]/body:opacity-100">
+    {% block modal %}{% endblock %}
+  </div>
+
+  <toast-message
+    class="fixed left-1/2 z-50 -bottom-20 opacity-0 invisible data-[open]:bottom-4 data-[open]:opacity-100 data-[open]:visible flex items-center gap-3 rounded-lg -translate-x-1/2 px-4 py-3 bg-content text-main transition-all group/toast">
+  </toast-message>
+
+  {% block layout %}{% endblock %}
+
+  <script src="assets/base.js?v={{ version }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+
+</html>

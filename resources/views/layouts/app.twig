@@ -1,0 +1,19 @@
+{% extends "/layouts/base.twig" %}
+
+{% block layout %}
+<div class="container">
+  {% include "/sections/header.twig" with {logo: true} %}
+</div>
+
+<div class="container flex flex-col gap-6">
+  {% block template %}{% endblock %}
+</div>
+
+<div class="container">
+  {% include "/sections/footer.twig" %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="assets/app.js?v={{ version }}"></script>
+{% endblock %}

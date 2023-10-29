@@ -1,0 +1,128 @@
+{% extends "/layouts/app.twig" %}
+
+{% set xdata = 'home' %}
+
+{% block title 'AI writer Tools'|title %}
+
+{% block template %}
+<div class="my-12" @input="params.query = $event.target.value">
+  {% include "/sections/search-box.twig" %}
+
+  <div class="flex items-center justify-center gap-12 mt-8">
+    <a href="app/ai/text-generator" class="hover:no-underline group">
+      <i
+        class="text-2xl flex items-center justify-center w-12 h-12 mx-auto ti ti-align-justified rounded-2xl bg-[#FED449] bg-gradient-to-t from-[#FED449] to-[#F19D73] text-white transition-all group-hover:scale-125"></i>
+
+      <span
+        class="block mt-2 text-xs font-semibold text-center transition-all group-hover:translate-y-1">AI
+        Writer</span>
+    </a>
+
+    <a href="app/ai/image-generator" class="hover:no-underline group">
+      <i
+        class="text-2xl flex items-center justify-center w-12 h-12 mx-auto ti ti-photo rounded-2xl bg-[#9C73F1] bg-gradient-to-t from-[#9C73F1] to-[#F19D73] text-white transition-all group-hover:scale-125"></i>
+
+      <span
+        class="block mt-2 text-xs font-semibold text-center transition-all group-hover:translate-y-1">
+        AI Image
+      </span>
+    </a>
+
+    <a href="app/ai/code-generator" class="hover:no-underline group">
+      <i
+        class="text-2xl flex items-center justify-center w-12 h-12 mx-auto ti ti-code rounded-2xl bg-[#FE5157] bg-gradient-to-t from-[#FE5157] to-[#F19D73] text-white transition-all group-hover:scale-125"></i>
+
+      <span
+        class="block mt-2 text-xs font-semibold text-center transition-all group-hover:translate-y-1">
+        AI Code
+      </span>
+    </a>
+
+    <a href="app/ai/speech-to-text" class="hover:no-underline group">
+      <i
+        class="text-2xl flex items-center justify-center w-12 h-12 mx-auto ti ti-headphones rounded-2xl bg-[#8AAF11] bg-gradient-to-t from-[#8AAF11] to-[#BCE143] text-white transition-all group-hover:scale-125"></i>
+
+      <span
+        class="block mt-2 text-xs font-semibold text-center transition-all group-hover:translate-y-1">
+        Speech to Text
+      </span>
+    </a>
+  </div>
+</div>
+
+<div class="my-6">
+  <h2 class="text-xl font-semibold">AI Writer Templates</h2>
+
+  <div class="flex flex-wrap gap-2 my-2">
+    {% for i in 1..5 %}
+    <span
+      class="px-2 py-1 text-xs rounded-lg bg-line-dimmed animate-pulse {{ i == 1 ? 'w-20' : 'w-14' }}"
+      :class="{'hidden': categoriesLoaded}">
+      &nbsp;
+    </span>
+    {% endfor %}
+
+    <template x-if="categoriesLoaded">
+      <button
+        class="py-1 px-2 rounded-lg text-xs bg-transparent border border-line-dimmed text-content data-[state=active]:bg-button data-[state=active]:border-button data-[state=active]:text-button-content hover:border-line"
+        :data-state="params.category == null && params.type == null ? 'active' : ''"
+        @click="resetFilters">
+        All
+      </button>
+    </template>
+
+    <template x-if="categoriesLoaded">
+      <template x-for="category in categories">
+        <button
+          class="py-1 px-2 rounded-lg text-xs bg-transparent border border-line-dimmed text-content data-[state=active]:bg-button data-[state=active]:border-button data-[state=active]:text-button-content hover:border-line"
+          :data-state="params.category == category.id ? 'active' : ''"
+          x-text="category.title" @click="params.category = category.id">
+        </button>
+      </template>
+    </template>
+  </div>
+
+  <div class="grid grid-cols-3 gap-6 my-6">
+    {% for i in 1..6 %}
+    <div
+      class="relative transition-all border-4 x-remove border-intermediate hover:bg-transparent rounded-xl group hover:ring-intermediate hover:ring-8 preset-card"
+      data-starred="false" :class="{'hidden': presetsLoaded}">
+
+      <div
+        class="relative z-20 flex flex-col justify-start min-h-[14.5rem] gap-4 p-6 hover:no-underline">
+        <div
+          class="w-10 h-10 text-white rounded-full bg-line-dimmed shrink-0 animate-pulse">
+        </div>
+
+        <div>
+          <h3 class="w-40 rounded-lg bg-line-dimmed animate-pulse">&nbsp;
+          </h3>
+
+          <div class="mt-1 text-sm text-content-dimmed">
+            <p class="w-full rounded-lg bg-line-dimmed animate-pulse">
+              &nbsp;
+            </p>
+            <p class="w-1/2 mt-1 rounded-lg bg-line-dimmed animate-pulse">
+              &nbsp;
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-auto">
+          <span
+            class="block px-2 py-1 text-xs rounded-lg bg-line-dimmed animate-pulse w-14">
+            &nbsp;
+          </span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    <template x-if="presetsLoaded">
+      <template x-for="preset in presets">
+        {% include "/snippets/preset-card.twig" %}
+      </template>
+    </template>
+  </div>
+</div>
+{% endblock %}

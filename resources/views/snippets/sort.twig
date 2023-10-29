@@ -1,0 +1,43 @@
+<div class="relative" x-data
+  @click.outside="$refs.sortel.removeAttribute('data-open')">
+
+  <input type="hidden" name="sort" x-model="orderby">
+
+  <button
+    class="flex items-center gap-1 px-2 py-1 text-sm rounded-lg hover:bg-intermediate"
+    @click="$refs.sortel.toggleAttribute('data-open')">
+
+    <i class="ti ti-sort-ascending-2 text-content-dimmed"
+      x-show="dir=='asc'"></i>
+    <i class="ti ti-sort-descending-2 text-content-dimmed"
+      x-show="dir=='desc'"></i>
+    <span class="mr-1 text-content-dimmed">Sort by:</span>
+
+    <span x-text="sort.find(o => o.value == orderby)?.label">
+    </span>
+
+    <i class="text-xl ti ti-chevron-down"></i>
+  </button>
+
+  <div class="context-menu" x-ref="sortel"
+    @click="$el.removeAttribute('data-open')">
+
+    <ul class="text-sm">
+      <template x-for="option in sort">
+        <li x-show="option.value != null">
+          <button
+            class="flex items-center w-full gap-2 px-4 py-2 text-left hover:bg-intermediate group/option"
+            @click="dir = (dir=='desc' || dir==null ? 'asc' : 'desc'); orderby=option.value;">
+
+            <span x-text="option.label"></span>
+
+            <i class="invisible text-content-dimmed ti ti-arrow-up group-hover/option:visible"
+              x-show="orderby!=option.value || dir=='desc'"></i>
+            <i class="invisible text-content-dimmed ti ti-arrow-down group-hover/option:visible"
+              x-show="orderby==option.value && dir=='asc'"></i>
+          </button>
+        </li>
+      </template>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+{% extends "/layouts/admin.twig" %}
+
+{% set active_menu = 'categories' %}
+
+{% set xdata %}
+category({{ (category is defined ? category : {})|json_encode|raw }})
+{% endset %}
+
+{% set headerInfoText %}
+<a href="admin/categories"
+  class="inline-flex items-center gap-2 text-sm transition-all duration-300 text-content hover:no-underline hover:gap-0 group/back">
+  <i
+    class="text-lg transition duration-75 ti ti-arrow-left group-hover/back:opacity-0 group-hover/back:-translate-x-2"></i>
+  Back to categories
+</a>
+{% endset %}
+
+{% block title (category is defined ? 'Edit category' : 'New category')|title %}
+
+{% block template %}
+<form class="flex flex-col max-w-3xl gap-8" @submit.prevent="submit">
+
+  <div>
+    <h1 class="text-xl font-bold">
+      <span x-show="!category.id">Create new category</span>
+      <span x-show="category.id">
+        Edit category:
+        <span class="font-normal text-intermediate-content"
+          x-text="category.title"></span>
+      </span>
+    </h1>
+
+    <template x-if="category.id">
+      <code is="resource-id" x-text="category.id"></code>
+    </template>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <section class="px-16 py-12 border rounded-xl border-line-dimmed">
+      <div>
+        <label for="title" class="text-sm font-semibold">Title</label>
+
+        <input type="text" id="title" name="title" class="mt-2 input"
+          autocomplete="off"
+          :placeholder="category.title || 'Include a title for the category'"
+          x-model="model.title" />
+      </div>
+    </section>
+  </div>
+
+  <div class="flex justify-end gap-4">
+    <a href="admin/categories" class="button button-outline">Cancel</a>
+
+    <button type="submit" class="button" x-ref="submit"
+      :disabled="!isSubmitable()" :processing="isProcessing">
+
+      {% include "/snippets/spinner.twig" %}
+
+      <span x-show="!category.id">Create category</span>
+      <span x-show="category.id">Update category</span>
+
+    </button>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "/layouts/minimal.twig" %}
+
+{% if policy == 'privacy' %}
+{% set title = 'Privacy policy' %}
+{% set content = option.policies.privacy %}
+{% elseif policy == 'terms' %}
+{% set title = 'Terms of services' %}
+{% set content = option.policies.tos %}
+{% elseif policy == 'refund' %}
+{% set title = 'Refund policy' %}
+{% set content = option.policies.refund %}
+{% endif %}
+
+{% block title title|title %}
+
+{% block template %}
+<div class="gap-6 py-8 border px-14 border-line-dimmed rounded-xl">
+  <div class="prose-sm prose">
+    {{ content | markdown_to_html }}
+  </div>
+</div>
+
+<footer class="py-10">
+  <div class="text-center">
+    <a href="{{ auth_user is defined ? 'app' : '/' }}"
+      class="text-content-dimmed">
+      {{ auth_user is defined ? 'Go to app' : 'Go to home page' }}
+    </a>
+  </div>
+</footer>
+{% endblock %}

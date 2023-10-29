@@ -1,0 +1,74 @@
+{% extends "/layouts/admin.twig" %}
+{% set active_menu = 'settings' %}
+
+{% block submenu %}
+{% include "/sections/submenu/settings.twig" with {active: 'general'} %}
+{% endblock %}
+
+{% set xdata = 'settings' %}
+{% block title 'General settings'|title %}
+
+{% block template %}
+<form class="flex flex-col max-w-3xl gap-8" @submit.prevent="submit"
+  x-ref="form">
+
+  <div>
+    <h1 class="text-xl font-bold">
+      General settings
+    </h1>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <section
+      class="grid grid-cols-1 gap-6 px-16 py-12 border rounded-xl border-line-dimmed">
+
+      <h2 class="text-lg font-bold">General</h2>
+
+      <div>
+        <label for="site.name" class="text-sm font-semibold">Name</label>
+
+        <input type="text" id="site.name" name="site[name]" class="mt-2 input"
+          autocomplete="off" placeholder="Aikeedo"
+          value="{{ option.site.name ?? '' }}" />
+      </div>
+    </section>
+
+    <section
+      class="grid grid-cols-1 gap-6 px-16 py-12 border rounded-xl border-line-dimmed">
+
+      <h2 class="text-lg font-bold">SEO</h2>
+
+      <div>
+        <label for="site.keywords"
+          class="text-sm font-semibold">Keywords</label>
+
+        <input type="text" id="site.keywords" name="site[keywords]"
+          class="mt-2 input" autocomplete="off" placeholder="Aikeedo"
+          value="{{ option.site.keywords ?? '' }}" />
+      </div>
+
+      <div>
+        <label for="site.description"
+          class="text-sm font-semibold">Description</label>
+
+        <textarea name="site[description]" id="site.description"
+          class="mt-2 input"
+          rows="3">{{ option.site.description ?? '' }}</textarea>
+      </div>
+    </section>
+  </div>
+
+  <div class="flex justify-end gap-4">
+    <a href="admin/settings" class="button button-outline">Cancel</a>
+
+    <button type="submit" class="button" x-ref="submit"
+      :disabled="!isSubmitable" :processing="isProcessing">
+
+      {% include "/snippets/spinner.twig" %}
+
+      Save changes
+
+    </button>
+  </div>
+</form>
+{% endblock %}

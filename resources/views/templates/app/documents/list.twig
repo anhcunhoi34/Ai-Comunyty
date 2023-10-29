@@ -1,0 +1,223 @@
+{% extends "/layouts/app.twig" %}
+{% from "/macros/avatar.twig" import preset_avatar, avatar %}
+
+{% set sort = [
+  {
+    value: null,
+    label: 'Default'
+  },
+
+  {
+    value: 'created_at',
+    label: 'Date'
+  },
+
+  {
+    value: 'title',
+    label: 'Title'
+  }
+] %}
+
+{% set filters = [] %}
+
+{% set strings = {
+  delete_success: "Document has been deleted successfully."
+} %}
+
+{% set xdata %}
+list("documents", {{ sort|json_encode|raw }}, {{ filters|json_encode|raw }},
+{{ strings|json_encode|raw }})
+{% endset %}
+
+{% block title 'My documents'|title %}
+
+{% block template %}
+{# Header #}
+<div class="flex items-center gap-4">
+  <h1 class="text-xl font-bold">My documents</h1>
+
+  {% include "/snippets/sort.twig" %}
+
+  <a href="app" class="ml-auto text-sm button button-outline hover:gap-3 group">
+    <i class="transition-all ti ti-arrow-left group-hover:scale-150"></i>
+    Back to dashboard
+  </a>
+</div>
+
+{# Filters #}
+{% include "/snippets/filters.twig" %}
+
+{# List #}
+<div class="my-6 group/list" :data-state="state">
+
+  <div
+    class="hidden group-data-[state=empty]/list:flex items-center gap-6 my-40">
+    <i class="text-5xl ti ti-braces text-content-dimmed"></i>
+
+    <div>
+      <h2 class="text-lg font-bold">
+        Empty result set
+      </h2>
+
+      <template x-if="isFiltered">
+        <p class="mt-1 text-content-dimmed">
+          There are no document matching your search.
+          <button class="text-content hover:underline"
+            @click="resetFilters()">Reset filters</button> and try again.
+        </p>
+      </template>
+
+      <template x-if="!isFiltered">
+        <p class="mt-1 text-content-dimmed">
+          There are no document yet.
+        </p>
+      </template>
+    </div>
+  </div>
+
+  <div
+    class="grid grid-cols-12 gap-3 items-center px-3 py-2 text-content-dimmed text-xs group-data-[state=empty]/list:hidden">
+    <div class="col-span-9">Document</div>
+    <div class="col-span-2">Created</div>
+    <div class="col-span-1"></div>
+  </div>
+
+  <ul class="text-sm group-data-[state=empty]:hidden">
+    {% for i in range(1,5) %}
+    <li
+      class="hidden grid-cols-12 gap-3 items-center p-3 rounded-xl border border-line-dimmed hover:border-line my-1 first:mt-0 last:mb-0 animate-pulse group-data-[state=initial]/list:grid">
+      <div class="flex items-center col-span-9 gap-3">
+
+        <div class="relative w-10 h-10 rounded-full bg-line-dimmed">
+        </div>
+
+        <div>
+          <div>
+            <span
+              class="inline-block w-32 h-6 rounded-lg bg-line-dimmed"></span>
+            <span
+              class="inline-block w-32 h-6 rounded-lg bg-line-dimmed"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-span-2">
+        <span class="inline-block w-20 h-6 rounded-lg bg-line-dimmed"></span>
+      </div>
+
+      <div class="col-span-1"></div>
+
+      <div class="col-span-1 justify-self-end">
+        <div class="relative group">
+          <button>
+            <i class="text-2xl ti ti-dots-vertical text-content-dimmed"></i>
+          </button>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+
+    <template x-for="doc in resources" :key="doc.id">
+      <li
+        class="relative grid items-center grid-cols-12 gap-3 p-3 my-1 border rounded-xl border-line-dimmed hover:border-line first:mt-0 last:mb-0"
+        x-data>
+        <a :href="`app/documents/${doc.id}`"
+          class="absolute top-0 left-0 w-full h-full cursor-pointer"></a>
+
+        <div class="flex items-center col-span-9 gap-3">
+
+          <template x-if="doc.preset">
+            {{ preset_avatar('doc.preset') }}
+          </template>
+
+          <template x-if="!doc.preset">
+            {{ avatar('doc.title') }}
+          </template>
+
+          <div class="max-w-2xl">
+            <div class="font-bold"
+              x-html="doc.title.replace(/(?:\r\n|\r|\n)/g, '<br>')">
+            </div>
+
+            <template x-if="doc.preset">
+              <div class="mt-1 text-content-dimmed">
+                <a :href="`app/ai/writer/${doc.preset.id}`"
+                  x-text="doc.preset.title" class="relative z-10"></a>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <div class="col-span-2" x-text="doc.created_at"></div>
+
+        <div class="col-span-1 justify-self-end">
+          <div class="relative"
+            @click.outside="$refs.context.removeAttribute('data-open')">
+
+            <button @click="$refs.context.toggleAttribute('data-open')">
+              <i
+                class="text-2xl ti ti-dots-vertical text-content-dimmed hover:text-intermediate-content"></i>
+            </button>
+
+            <div class="z-10 context-menu" x-ref="context">
+              <ul>
+                <li>
+                  <a :href="`app/documents/${doc.id}`"
+                    class="flex items-center gap-2 px-4 py-2 hover:no-underline hover:bg-intermediate">
+                    <i class="text-2xl ti ti-pencil"></i> Edit
+                  </a>
+                </li>
+
+                <li>
+                  <button
+                    class="flex items-center w-full gap-2 px-4 py-2 hover:no-underline hover:bg-intermediate"
+                    @click.prevent="currentResource = doc; overlay.open('modal')">
+                    <i class="text-2xl ti ti-trash"></i> Delete
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </li>
+    </template>
+  </ul>
+</div>
+{% endblock %}
+
+
+{% block modal %}
+<template x-if="currentResource">
+  <div class="max-w-xs mx-auto">
+    <div
+      class="relative flex items-center justify-center w-24 h-24 mx-auto rounded-full text-failure/25">
+
+      <svg class="absolute top-0 left-0 w-full h-full" width="112" height="112"
+        viewBox="0 0 112 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="56" cy="56" r="55.5" stroke="currentColor"
+          stroke-dasharray="8 8" />
+      </svg>
+
+      <div
+        class="flex items-center justify-center w-20 h-20 text-4xl transition-all rounded-full bg-failure/25 text-failure">
+        <i class="ti ti-trash"></i>
+      </div>
+    </div>
+
+    <h3 class="mt-4 text-lg text-center">
+      Do you really want to delete
+      <strong x-text="`${currentResource.title}`"></strong>
+      document?
+    </h3>
+
+    <div class="flex items-center justify-center gap-4 mt-10">
+      <button class="button button-outline" @click="overlay.close()">No,
+        cancel</button>
+      <button class="text-white button bg-failure outline-failure"
+        @click="deleteResource(currentResource); overlay.close()">
+        Yes, delete
+      </button>
+    </div>
+  </div>
+</template>
+{% endblock %}

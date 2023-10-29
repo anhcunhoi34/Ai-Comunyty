@@ -1,0 +1,98 @@
+{% extends "/layouts/admin.twig" %}
+{% set active_menu = 'settings' %}
+
+{% block submenu %}
+{% include "/sections/submenu/settings.twig" with {active: 'policies'} %}
+{% endblock %}
+
+{% set xdata = 'settings' %}
+{% block title 'Policies'|title %}
+
+{% block template %}
+<form class="flex flex-col max-w-3xl gap-8" @submit.prevent="submit"
+  x-ref="form">
+
+  <div>
+    <h1 class="text-xl font-bold">
+      Policies
+    </h1>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <section
+      class="grid grid-cols-1 gap-6 px-16 py-12 border rounded-xl border-line-dimmed">
+
+      <h2 class="text-lg font-bold">Terms of services</h2>
+
+      <div>
+        <label for="policies.tos" class="text-sm font-semibold">Content</label>
+
+        <textarea name="policies[tos]" id="policies.tos"
+          class="h-auto mt-2 input"
+          rows="20">{{ option.policies.tos ?? '' }}</textarea>
+
+        <ul class="m-3 mb-0 text-xs list-disc list-inside text-content-dimmed">
+          <li class="my-1">
+            Markdown is supported
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section
+      class="grid grid-cols-1 gap-6 px-16 py-12 border rounded-xl border-line-dimmed">
+
+      <h2 class="text-lg font-bold">Privacy policy</h2>
+
+      <div>
+        <label for="policies.privacy"
+          class="text-sm font-semibold">Content</label>
+
+        <textarea name="policies[privacy]" id="policies.tos"
+          class="h-auto mt-2 input"
+          rows="20">{{ option.policies.privacy ?? '' }}</textarea>
+
+        <ul class="m-3 mb-0 text-xs list-disc list-inside text-content-dimmed">
+          <li class="my-1">
+            Markdown is supported
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section
+      class="grid grid-cols-1 gap-6 px-16 py-12 border rounded-xl border-line-dimmed">
+
+      <h2 class="text-lg font-bold">Refund policy</h2>
+
+      <div>
+        <label for="policies.refund"
+          class="text-sm font-semibold">Content</label>
+
+        <textarea name="policies[refund]" id="policies.tos"
+          class="h-auto mt-2 input"
+          rows="20">{{ option.policies.refund ?? '' }}</textarea>
+
+        <ul class="m-3 mb-0 text-xs list-disc list-inside text-content-dimmed">
+          <li class="my-1">
+            Markdown is supported
+          </li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <div class="flex justify-end gap-4">
+    <a href="admin/settings" class="button button-outline">Cancel</a>
+
+    <button type="submit" class="button" x-ref="submit"
+      :disabled="!isSubmitable" :processing="isProcessing">
+
+      {% include "/snippets/spinner.twig" %}
+
+      Save changes
+
+    </button>
+  </div>
+</form>
+{% endblock %}

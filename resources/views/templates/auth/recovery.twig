@@ -1,0 +1,83 @@
+{% extends "/layouts/minimal.twig" %}
+
+{% block title 'Password recovery'|title %}
+{% set xdata = 'auth' %}
+
+{% block template %}
+<div class="py-8 my-10 border border-line-dimmed rounded-xl px-14">
+  <div class="group">
+    <form @submit.prevent="submit" x-ref="form" data-api-path="/recovery"
+      class="flex flex-col gap-6">
+      <div
+        class="relative flex items-center justify-center rounded-full w-28 h-28 text-accent">
+        <svg class="absolute top-0 left-0 w-full h-full" width="112"
+          height="112" viewBox="0 0 112 112" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <circle cx="56" cy="56" r="55.5" stroke="currentColor"
+            stroke-dasharray="8 8" />
+        </svg>
+
+        <div
+          class="flex items-center justify-center w-24 h-24 text-5xl rounded-full bg-accent text-accent-content">
+
+          <i class="ti ti-lock-square-rounded" :class="{'hidden':success}"></i>
+
+          <template x-if="success">
+            <i class="ti ti-mail"></i>
+          </template>
+        </div>
+      </div>
+
+      <div>
+        <a href="login"
+          class="inline-flex items-center gap-1 transition-all badge hover:no-underline hover:gap-0.5">
+          <i class="ti ti-arrow-left"></i>
+          Back to login
+        </a>
+
+        <h1 class="mt-2 text-lg font-bold">
+          <span :class="{'hidden':success}">Password recovery</span>
+
+          <template x-if="success">
+            <span>Check your email!</span>
+          </template>
+        </h1>
+
+        <template x-if="success">
+          <p class="mt-1 text-content-dimmed">
+            We send password reset instruction to your email address. Please
+            check your inbox and follow the instructions.
+          </p>
+        </template>
+      </div>
+
+      <div :class="{'hidden':success}">
+        <label for="email"
+          class="inline-block text-sm font-semibold cursor-pointer">Email</label>
+
+        <input type="email" id="email" name="email"
+          placeholder="Type your email address" autocomplete="email"
+          class="mt-2 input" required>
+      </div>
+
+      <button type="submit" class="w-full button" :class="{'hidden':success}"
+        x-ref="submit" :disabled="!isSubmitable" :processing="isProcessing">
+
+        {% include "/snippets/spinner.twig" %}
+
+        Send request
+      </button>
+
+      <div class="flex items-center gap-1 text-sm" :class="{'hidden':success}">
+        <i class="text-base ti ti-help-square-rounded"></i>
+        Don't have an account?
+        <a href="signup" class="font-semibold">Sign up</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="assets/auth.js"></script>
+{% endblock %}

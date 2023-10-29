@@ -1,0 +1,133 @@
+{% extends "/layouts/admin.twig" %}
+
+{% set active_menu = 'dashboard' %}
+
+{% set xdata %}
+{% endset %}
+
+{% block title 'Dashboard'|title %}
+
+{% block template %}
+<div>
+  <div>
+    <span class="text-content-dimmed">Welcome</span>
+    <div class="text-xl font-bold">{{ auth_user.first_name }}
+      {{ auth_user.last_name }}</div>
+
+    <p class="mt-2 text-sm text-content-dimmed">
+      Once you're done, you'll unlock a whole array of awesome tools showcasing
+      how AIkeedo powers business growth.
+    </p>
+  </div>
+
+  <div class="mt-10">
+    <h2 class="text-lg font-bold">Getting started</h2>
+
+    <div class="flex flex-col gap-2 mt-4">
+      <div
+        class="flex items-center justify-between p-4 border rounded-xl border-line-dimmed">
+        <div class="flex items-center gap-4">
+          <span
+            class="flex items-center justify-center w-10 h-10 rounded-full bg-button text-button-content">
+            <i class="text-2xl ti ti-brand-openai"></i>
+          </span>
+
+          <div class="font-bold">Connect your OpenAI Key</div>
+        </div>
+
+        {% if option.openai.api_secret_key is defined %}
+        <div class="flex items-center gap-4 text-success">
+          <span class="font-medium">Done</span>
+
+          <span
+            class="flex items-center justify-center w-10 h-10 rounded-full bg-success/25 text-success">
+            <i class="text-2xl ti ti-square-rounded-check-filled"></i>
+          </span>
+        </div>
+        {% else %}
+        <a href="admin/settings/openai"
+          class="button button-outline">Connect</a>
+        {% endif %}
+      </div>
+
+      <div
+        class="flex items-center justify-between p-4 border rounded-xl border-line-dimmed">
+        <div class="flex items-center gap-4">
+          <span
+            class="flex items-center justify-center w-10 h-10 rounded-full bg-button text-button-content">
+            <i class="text-2xl ti ti-cash"></i>
+          </span>
+
+          <div class="font-bold">Configure payment gateways</div>
+        </div>
+
+        {% if option.stripe is defined or option.paypal is defined %}
+        <div class="flex items-center gap-4 text-success">
+          <span class="font-medium">Done</span>
+
+          <span
+            class="flex items-center justify-center w-10 h-10 rounded-full bg-success/25 text-success">
+            <i class="text-2xl ti ti-square-rounded-check-filled"></i>
+          </span>
+        </div>
+        {% else %}
+        <a href="admin/settings/payments"
+          class="button button-outline">Configure</a>
+        {% endif %}
+      </div>
+
+      <div
+        class="flex items-center justify-between p-4 border rounded-xl border-line-dimmed">
+        <div class="flex items-center gap-4">
+          <span
+            class="flex items-center justify-center w-10 h-10 rounded-full bg-button text-button-content">
+            <i class="text-2xl ti ti-settings-2"></i>
+          </span>
+
+          <div class="font-bold">Set business details</div>
+        </div>
+
+        {% if option.site is defined %}
+        <div class="flex items-center gap-4 text-success">
+          <span class="font-medium">Done</span>
+
+          <span
+            class="flex items-center justify-center w-10 h-10 rounded-full bg-success/25 text-success">
+            <i class="text-2xl ti ti-square-rounded-check-filled"></i>
+          </span>
+        </div>
+        {% else %}
+        <a href="admin/settings/general" class="button button-outline">Business
+          details</a>
+        {% endif %}
+      </div>
+
+      <div
+        class="flex items-center justify-between p-4 border rounded-xl border-line-dimmed">
+        <div class="flex items-center gap-4">
+          <span
+            class="flex items-center justify-center w-10 h-10 rounded-full bg-button text-button-content">
+            <i class="text-2xl ti ti-carousel-horizontal"></i>
+          </span>
+
+          <div class="font-bold">Setup membership plans</div>
+        </div>
+
+        {% if plans_count is defined and plans_count > 0 %}
+        <div class="flex items-center gap-4 text-success">
+          <span class="font-medium">Done</span>
+
+          <span
+            class="flex items-center justify-center w-10 h-10 rounded-full bg-success/25 text-success">
+            <i class="text-2xl ti ti-square-rounded-check-filled"></i>
+          </span>
+        </div>
+        {% else %}
+        <a href="admin/plans/new" class="button button-outline">Add pricing
+          plan</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

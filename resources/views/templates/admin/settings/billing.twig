@@ -1,0 +1,189 @@
+{% extends "/layouts/admin.twig" %}
+{% set active_menu = 'settings' %}
+
+{% block submenu %}
+{% include "/sections/submenu/settings.twig" with {active: 'billing'} %}
+{% endblock %}
+
+{% set xdata = 'settings' %}
+{% block title 'Billing settings'|title %}
+
+{% block template %}
+<form class="flex flex-col max-w-3xl gap-8" @submit.prevent="submit"
+  x-ref="form">
+
+  <div>
+    <h1 class="text-xl font-bold">
+      Billing Configuration
+    </h1>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <section
+      class="grid grid-cols-1 gap-6 px-16 py-12 border rounded-xl border-line-dimmed">
+
+      <h2 class="text-lg font-bold">General</h2>
+
+      <div>
+        <label for="billing.currency" class="text-sm font-semibold">Default
+          Currency</label>
+
+        <select id="billing.currency" name="billing[currency]"
+          class="mt-2 input">
+
+          {% for code, name in currencies %}
+          <option value="{{ code }}"
+            {{ option.billing.currency is defined and code == option.billing.currency ? 'selected' : ''  }}>
+            {{ name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </section>
+
+    <section
+      class="grid grid-cols-2 gap-6 px-16 py-12 border rounded-xl border-line-dimmed">
+
+      <h2 class="col-span-2 text-lg font-bold">Trialing</h2>
+
+      <div>
+        <label for="billing.trial_period_days"
+          class="text-sm font-semibold">Trial period days</label>
+
+        <input type="number" id="billing.trial_period_days"
+          name="billing[trial_period_days]" min="0" max="90" class="mt-2 input"
+          value="{{ option.billing.trial_period_days ?? 0 }}">
+
+        <ul class="m-3 mb-0 text-xs list-disc list-inside text-content-dimmed">
+          <li class="my-1">Set value to <code>0</code> to disable trailing
+          </li>
+          <li class="my-1">Each user is eligible for trailing only once in any
+            paid plan</li>
+        </ul>
+      </div>
+
+      <div>
+        <label class="text-sm font-semibold">&nbsp;</label>
+
+        <div class="mt-2">
+          <label class="inline-flex items-center gap-2 mt-3 cursor-pointer">
+            <input type="checkbox" name="billing[trial_without_payment]"
+              class="hidden peer"
+              {{ option.billing.trial_without_payment is defined and option.billing.trial_without_payment ? 'checked' : '' }}>
+
+            <span
+              class="h-6 w-10 rounded-3xl bg-line relative block peer-checked:bg-success transition-all after:h-5 after:w-5 after:top-0.5 after:absolute after:left-0 after:ml-0.5 after:transition-all after:rounded-full after:bg-white peer-checked:after:left-4"></span>
+
+            <span class="text-content-dimmed peer-checked:hidden">
+              Trial without payment
+            </span>
+
+            <span class="hidden text-success peer-checked:inline">
+              Trial without payment
+            </span>
+          </label>
+        </div>
+
+        <ul class="m-3 mb-0 text-xs list-disc list-inside text-content-dimmed">
+          <li class="my-1">If enabled, eligible users can upgrade to any paid
+            plan
+            with provinding any payment method.</li>
+          <li class="my-1">After trial ends, a payment method will be
+            required.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section
+      class="grid grid-cols-1 gap-6 px-16 py-12 border rounded-xl border-line-dimmed">
+
+      <h2 class="text-lg font-bold">Default & Fallback plans</h2>
+
+      <div>
+        <label for="billing.signup_plan" class="text-sm font-semibold">Sign up
+          plan</label>
+
+        <select id="billing.signup_plan" name="billing[signup_plan]"
+          class="mt-2 input" :disabled="!plansFetched">
+          <option value="">None</option>
+
+          <template x-for="plan in plans" :key="plan.id">
+            <template
+              x-if="plan.billing_cycle == 'monthly' || plan.billing_cycle == 'yearly'">
+              <option :value="plan.id"
+                x-text="`${plan.title} / ${plan.billing_cycle}`"
+                :selected="plan.id == '{{ option.billing.signup_plan ?? '' }}'">
+              </option>
+            </template>
+          </template>
+        </select>
+
+        <ul class="m-3 mb-0 text-xs list-disc list-inside text-content-dimmed">
+          <li class="my-1">
+            New users will be automatically subscribed to this plan
+            <strong>without provinding payment details</strong>.
+          </li>
+
+          <li class="my-1">
+            Select <strong>None</strong> to disable automatic subscription.
+            Users
+            will be required to choose a plan by themself
+          </li>
+
+          <li class="my-1">
+            If you're going to select any paid plan, then it's highly
+            recommended to enable
+            trialing. Otherwise, new users will be able to the selected paid
+            plan for free.
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <label for="billing.fallback_plan"
+          class="text-sm font-semibold">Fallback plan</label>
+
+        <select id="billing.fallback_plan" name="billing[fallback_plan]"
+          class="mt-2 input" :disabled="!plansFetched">
+          <option value="">None</option>
+
+          <template x-for="plan in plans" :key="plan.id">
+            <template
+              x-if="plan.billing_cycle == 'monthly' || plan.billing_cycle == 'yearly'">
+              <option :value="plan.id"
+                x-text="`${plan.title} / ${plan.billing_cycle}`"
+                :selected="plan.id == '{{ option.billing.fallback_plan ?? '' }}'">
+              </option>
+            </template>
+          </template>
+        </select>
+
+        <ul class="m-3 mb-0 text-xs list-disc list-inside text-content-dimmed">
+          <li class="my-1">
+            If any subscription expires or fails to renew, then the user will
+            be automatically subscribed to this plan.
+          </li>
+
+          <li class="my-1">
+            Select <strong>None</strong> to disable automatic downgrading.
+            Users will be required to choose a new plan by themself.
+          </li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <div class="flex justify-end gap-4">
+    <a href="admin/settings" class="button button-outline">Cancel</a>
+
+    <button type="submit" class="button" x-ref="submit"
+      :disabled="!isSubmitable" :processing="isProcessing">
+
+      {% include "/snippets/spinner.twig" %}
+
+      Save changes
+
+    </button>
+  </div>
+</form>
+{% endblock %}

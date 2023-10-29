@@ -1,0 +1,107 @@
+{% extends "/layouts/app.twig" %}
+
+{% set xdata = "ai" %}
+{% block title (preset is defined ? preset.title : 'AI Writer')|title %}
+
+{% block template %}
+
+{% embed "/sections/page-header.twig" with {  back: 'app' } %}
+
+{% block title 'Code Generator' %}
+{% block desc 'Generate high quality code in seconds.' %}
+
+{% block badge %}
+<span
+  :title="`${ {{auth_user.token_credit ?? 'null' }} == null ? 'Unlimited' : `{{auth_user.token_credit}}` } tokens`"
+  class="inline-flex items-center gap-1 px-2 py-1 text-sm rounded-lg bg-line text-intermediate-content">
+  <i class="text-base ti ti-square-rounded-letter-t"></i>
+
+  <strong
+    x-text="{{ auth_user.token_credit ?? 'null' }} == null ? 'Unlimited' : Intl.NumberFormat(document.documentElement.lang, { notation: 'compact' }).format(`{{ auth_user.token_credit }}`)"></strong>
+  credits remaining
+</span>
+{% endblock %}
+
+{% endembed %}
+
+<div class="flex items-start gap-8 mt-4">
+  <section
+    class="sticky p-6 border top-4 w-96 border-line-dimmed rounded-xl shrink-0">
+    <h2 class="text-lg font-bold">Prompts</h2>
+
+    <form class="grid grid-cols-1 gap-6 mt-4"
+      @submit.prevent="submit('/code-generator')" x-ref="form">
+
+      <div>
+        <label for="prompt" class="text-sm font-semibold">
+          Description
+
+          <i class="ti ti-help-square-rounded-filled help"
+            title="The more details you provide, the better the result will be."
+            data-tooltip></i>
+        </label>
+
+        <textarea cols="8" id="prompt" name="prompt"
+          placeholder="Write a bouncing ball animation in CSS"
+          class="mt-2 input" rows="3" autocomplete="off" required></textarea>
+      </div>
+
+
+      <div>
+        <label for="language" class="text-sm font-semibold">
+          Programming Language
+        </label>
+
+        <input type="text" name="language" id="language" class="mt-2 input"
+          placeholder="PHP, JavaScript etc." required>
+      </div>
+
+      <div>
+        <button type="submit" class="w-full button" :disabled="!isSubmitable"
+          :processing="isProcessing">
+
+          <svg width="24" height="24" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg" class="spinner">
+            <style>
+              .spinner_S1WN {
+                animation: spinner_MGfb .8s linear infinite;
+                animation-delay: -.8s
+              }
+
+              .spinner_Km9P {
+                animation-delay: -.65s
+              }
+
+              .spinner_JApP {
+                animation-delay: -.5s
+              }
+
+              @keyframes spinner_MGfb {
+
+                93.75%,
+                100% {
+                  opacity: .2
+                }
+              }
+            </style>
+            <circle class="spinner_S1WN" cx="4" cy="12" r="3" />
+            <circle class="spinner_S1WN spinner_Km9P" cx="12" cy="12" r="3" />
+            <circle class="spinner_S1WN spinner_JApP" cx="20" cy="12" r="3" />
+          </svg>
+
+          <span class="inline-flex items-center gap-1" x-show="!isProcessing">
+            <i class="ti ti-sparkles"></i>
+            Generate Result
+          </span>
+
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <div class="flex flex-col gap-4 grow" x-cloak>
+    {% include "sections/ai-result.twig" %}
+  </div>
+
+</div>
+{% endblock %}

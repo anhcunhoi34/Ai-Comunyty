@@ -1,0 +1,32 @@
+@import 'tailwindcss/base';
+
+@import 'tailwindcss/components';
+@import 'button.css';
+@import 'input.css';
+@import 'badge.css';
+@import 'preset-card.css';
+@import 'highlight.css';
+@import 'editor.css';
+@import 'context-menu.css';
+
+@import 'tippy.js/dist/tippy';
+@import 'tippy.js/dist/backdrop.css';
+@import 'tippy.js/animations/shift-away.css';
+
+@import 'tailwindcss/utilities';
+
+@layer components {
+  a {
+    @apply underline-offset-2 hover:underline;
+  }
+
+  .tippy-content {
+    @apply text-xs;
+  }
+}
+
+@layer utilities {
+  [x-cloak] {
+    @apply hidden;
+  }
+}

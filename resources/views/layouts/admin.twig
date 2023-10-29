@@ -1,0 +1,35 @@
+{% extends "/layouts/base.twig" %}
+
+{% block layout %}
+<div class="flex items-start min-h-screen">
+  <aside
+    class="sticky top-0 h-screen shrink-0 w-72 bg-intermediate text-intermediate-content">
+    {% include "/sections/navigation.twig" %}
+  </aside>
+
+  <div class="min-h-screen grow">
+    <div class="px-6">
+      {% include "/sections/header.twig" with {logo: false} %}
+    </div>
+
+    <div class="container my-5">
+      <div class="flex items-start">
+
+        <div>
+          {% block submenu %}{% endblock %}
+        </div>
+
+        <main class="flex-grow">
+          {% block template %}{% endblock %}
+        </main>
+      </div>
+
+      {% include "/sections/footer.twig" %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="assets/admin.js?v={{ version }}"></script>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends "/layouts/minimal.twig" %}
+
+{% block title 'Login'|title %}
+{% set xdata = 'auth' %}
+
+{% block template %}
+<div class="my-10">
+  {% if environment == 'demo' %}
+  <div
+    class="flex flex-col gap-6 py-8 mb-1 border border-line-dimmed rounded-xl px-14">
+    <div>
+      <h1 class="text-lg font-bold">Demo mode</h1>
+
+      <p class="mt-1 text-intermediate-content">
+        Demo mode is enabled. Some features might be disabled. All of those
+        features
+        will be available in the purchased version.
+      </p>
+    </div>
+
+    {% if demo_account_email is not empty and demo_account_password is not empty %}
+    <div>
+      <p class="text-intermediate-content">
+        Use following credentials
+        to login as an admin.
+      </p>
+
+      <div class="mt-4 font-mono text-sm">
+        <div>
+          <span class="font-semibold uppercase">
+            Email:
+          </span>
+          <span class="font-mono text-intermediate-content"
+            is="copyable-element"
+            data-tippy-placement="right">{{ demo_account_email }}</span>
+        </div>
+
+        <div class="mt-1">
+          <span class="font-semibold uppercase">
+            Password:
+          </span>
+          <span class="font-mono text-intermediate-content"
+            is="copyable-element"
+            data-tippy-placement="right">{{ demo_account_password }}</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-xs text-content-dimmed">
+      You can signup as a new user too to view the app as a normal user.
+    </p>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <div class="py-8 border border-line-dimmed rounded-xl px-14">
+    <div class="group">
+      <form @submit.prevent="submit" x-ref="form" data-api-path="/basic"
+        class="flex flex-col gap-6">
+
+        <h1 class="text-lg font-bold">Sign in to your account</h1>
+
+        <div>
+          <label for="email"
+            class="inline-block text-sm font-semibold cursor-pointer">Email</label>
+
+          <input type="email" id="email" name="email"
+            placeholder="Type your email address" autocomplete="email"
+            class="mt-2 input" required>
+        </div>
+
+        <div>
+          <label for="password"
+            class="inline-block text-sm font-semibold cursor-pointer">Password</label>
+
+          <div class="relative mt-2" x-data="{isVisible: false}">
+            <input :type="isVisible ? 'text' : 'password'" id="password"
+              name="password" placeholder="Type your password"
+              autocomplete="current-password" class="input" required>
+
+            <button type="button"
+              class="absolute text-2xl -translate-y-1/2 top-1/2 right-3 text-content-dimmed"
+              @click="isVisible = !isVisible">
+              <i class="block ti"
+                :class="{'ti-eye-closed' : isVisible, 'ti-eye':!isVisible}"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <label class="flex items-center gap-1">
+            <input type="checkbox" name="remember" class="hidden peer">
+
+            <i
+              class="text-2xl ti ti-square-rounded text-content-dimmed peer-checked:hidden"></i>
+            <i
+              class="hidden text-2xl ti ti-square-rounded-check-filled text-success peer-checked:block"></i>
+
+            <span class="cursor-pointer">Remember me</span>
+          </label>
+
+          <a href="recovery" class="text-info">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="w-full button" x-ref="submit"
+          :disabled="!isSubmitable" :processing="isProcessing">
+
+          {% include "/snippets/spinner.twig" %}
+
+          Sign in
+        </button>
+
+        <div class="flex items-center gap-1 text-sm">
+          <i class="text-base ti ti-help-square-rounded"></i>
+
+          Don't have an account?
+
+          <a href="signup" class="font-semibold">Sign up</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="assets/auth.js"></script>
+{% endblock %}

@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Psr\Container\ContainerInterface;
+use Symfony\Component\Console\Application;
+
+/** @var ContainerInterface $container */
+$container = include __DIR__ . '/../bootstrap/app.php';
+
+$console = $container->get(Application::class);
+$console->run();

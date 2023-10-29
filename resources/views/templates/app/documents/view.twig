@@ -1,0 +1,116 @@
+{% extends "/layouts/app.twig" %}
+
+{% set xdata %}
+document({{ (document ?: {})|json_encode() }})
+{% endset %}
+
+{% block title 'Document'|title %}
+
+{% block template %}
+{# Header #}
+
+{% embed "/sections/page-header.twig" with { back: 'app/documents' } only %}
+
+{% block title %}
+<span x-text="doc.title"></span>
+{% endblock %}
+
+{% block desc %}
+<code is="resource-id" x-text="doc.id"></code>
+{% endblock %}
+
+{% endembed %}
+
+<form @submit.prevent="submit" class="flex flex-col gap-4 my-6">
+  <div
+    class="sticky top-0 bg-main z-10 py-4 after:absolute after:top-full after:left-0 after:w-full after:h-px after:from-line-dimmed after:to-transparent after:via-line-dimmed after:bg-gradient-to-b after:via-10%">
+    <div
+      class="text-3xl font-light leading-10 autogrow-textarea font-editor-heading"
+      :data-replicated-value="model.title">
+      <textarea placeholder="Untitled document" autocomplete="off"
+        x-model="model.title" rows="1"
+        class="block w-full px-0 py-0 transition-colors bg-transparent border-0 appearance-none resize-none focus:ring-0 placeholder:text-content-dimmed placeholder:opacity-50 read-only:text-content-dimmed"></textarea>
+    </div>
+
+    <div class="flex items-center gap-4 mt-2">
+      <button type="button" @click="copyDocumentContents"
+        class="flex items-center gap-1 px-2 py-1 text-sm transition-all rounded-lg text-content-dimmed hover:bg-intermediate hover:text-intermediate-content disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
+        :disabled="isProcessing">
+        <i class="text-xl ti ti-copy"></i>
+
+        Copy
+      </button>
+
+      <div class="relative"
+        @click.outside="$refs.downloadOptions.removeAttribute('data-open')">
+
+        <button type="button"
+          @click="$refs.downloadOptions.toggleAttribute('data-open')"
+          class="flex items-center gap-1 px-2 py-1 text-sm transition-all rounded-lg text-content-dimmed hover:bg-intermediate hover:text-intermediate-content disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
+          :disabled="isProcessing">
+          <i class="text-xl ti ti-download"></i>
+
+          Download
+        </button>
+
+        <div class="context-menu context-menu-bl" x-ref="downloadOptions"
+          @click="$el.removeAttribute('data-open')">
+
+          <ul class="text-sm">
+            <li>
+              <button type="button"
+                class="flex items-center w-full gap-2 px-4 py-2 text-left hover:bg-intermediate"
+                @click="download('word')">
+                <i class="text-lg text-content-dimmed ti ti-letter-w"></i>
+                Word document
+              </button>
+            </li>
+
+            <li>
+              <button type="button"
+                class="flex items-center w-full gap-2 px-4 py-2 text-left hover:bg-intermediate"
+                @click="download('html')">
+                <i class="text-lg text-content-dimmed ti ti-brand-html5"></i>
+                HTML file
+              </button>
+            </li>
+
+            <li>
+              <button type="button"
+                class="flex items-center w-full gap-2 px-4 py-2 text-left hover:bg-intermediate"
+                @click="download('markdown')">
+                <i class="text-lg text-content-dimmed ti ti-markdown"></i>
+                Markdown
+              </button>
+            </li>
+
+            <li>
+              <button type="button"
+                class="flex items-center w-full gap-2 px-4 py-2 text-left hover:bg-intermediate"
+                @click="download('text')">
+                <i class="text-lg text-content-dimmed ti ti-txt"></i>
+                Text
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="editor" x-html="output">
+  </div>
+
+  <div class="flex gap-4">
+    <a href="app/documents" class="button button-outline">Cancel</a>
+
+    <button type="submit" class="button" x-ref="submit"
+      :disabled="!isSubmitable()" :processing="isProcessing">
+
+      {% include "/snippets/spinner.twig" %}
+
+      Update document
+    </button>
+  </div>
+</form>
+{% endblock %}

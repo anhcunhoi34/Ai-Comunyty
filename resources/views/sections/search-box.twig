@@ -1,0 +1,27 @@
+<search-box>
+  <form action="app/ai/writer" method="GET"
+    class="relative p-1 rounded-lg bg-intermediate text-content-dimmed focus-within:bg-accent focus-within:bg-gradient-to-br focus-within:from-[#E7FF9B] focus-within:to-[#CFE6FF]">
+    <input type="text" name="q"
+      placeholder="Type and search or generate something..." autocomplete="off"
+      class="w-full p-4 pl-12 text-sm border-none rounded-lg h-14 bg-main text-content placeholder:text-content-dimmed focus:ring-0 focus:outline-none peer">
+
+    <i
+      class="absolute text-2xl transition-all -translate-y-1/2 pointer-events-none ti ti-search left-4 top-1/2 peer-focus:text-line-primmary"></i>
+
+    <kbd
+      class="absolute text-sm transition-all -translate-y-1/2 pointer-events-none right-4 top-1/2 peer-focus:text-content peer-focus:-translate-x-2 peer-focus:invisible peer-focus:opacity-0">
+      <span class="mr-1">⌘</span>K
+    </kbd>
+
+    <kbd
+      class="absolute invisible text-sm transition-all translate-x-2 -translate-y-1/2 opacity-0 pointer-events-none right-4 top-1/2 text-content peer-focus:peer-placeholder-shown:translate-x-0 peer-focus:peer-placeholder-shown:visible peer-focus:peer-placeholder-shown:opacity-100 peer-focus:-translate-x-2">
+      ESC
+    </kbd>
+
+    <kbd
+      class="absolute invisible text-sm transition-all translate-x-2 -translate-y-1/2 opacity-0 pointer-events-none right-4 top-1/2 text-content peer-focus:opacity-100 peer-focus:visible peer-focus:translate-x-0 peer-focus:peer-placeholder-shown:translate-x-2 peer-focus:peer-placeholder-shown:invisile peer-focus:peer-placeholder-shown:opacity-0">
+      ENTER
+      <i class="ti ti-arrow-back"></i>
+    </kbd>
+  </form>
+</search-box>

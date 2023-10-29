@@ -1,0 +1,88 @@
+{% extends "/layouts/admin.twig" %}
+{% set active_menu = 'settings' %}
+
+{% block submenu %}
+{% include "/sections/submenu/settings.twig" with {active: 'smtp'} %}
+{% endblock %}
+
+{% set xdata = 'settings' %}
+{% block title 'SMTP settings'|title %}
+
+{% block template %}
+<form class="flex flex-col max-w-3xl gap-8" @submit.prevent="submit"
+  x-ref="form" data-path="/smtp">
+
+  <div>
+    <h1 class="text-xl font-bold">
+      SMTP
+    </h1>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <section
+      class="grid grid-cols-2 gap-6 px-16 py-12 border rounded-xl border-line-dimmed">
+
+      <div class="col-span-2">
+        <h2 class="text-lg font-bold">SMTP connection details</h2>
+      </div>
+
+      <div>
+        <label for="smtp.host" class="text-sm font-semibold">Host</label>
+
+        <input type="text" id="smtp.host" name="smtp[host]" class="mt-2 input"
+          autocomplete="off" :placeholder="'Enter your SMTP server host name'"
+          value="{{ option.smtp.host ?? '' }}" required />
+      </div>
+
+      <div>
+        <label for="smtp.port" class="text-sm font-semibold">Port</label>
+
+        <select id="smtp.port" name="smtp[port]" class="mt-2 input" required>
+          {% set ports = [25,465,587] %}
+
+          {% for port in ports %}
+          <option value="{{ port }}"
+            {{ option.smtp.port is defined and option.smtp.port == port ? 'selected' : ''   }}>
+            {{ port}}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label for="smtp.username"
+          class="text-sm font-semibold">Username</label>
+
+        <input type="text" id="smtp.username" name="smtp[username]"
+          class="mt-2 input" autocomplete="off"
+          :placeholder="'Authentication username'"
+          value="{{ option.smtp.username ?? '' }}" required />
+      </div>
+
+      <div>
+        <label for="smtp.password"
+          class="text-sm font-semibold">Password</label>
+
+        <input type="password" id="smtp.password" name="smtp[password]"
+          class="mt-2 input" autocomplete="new-password"
+          :placeholder="'Password to authenticate'"
+          value="{{ environment == 'demo' ? 'hidden-in-demo' : option.smtp.password ?? '' }}"
+          required />
+      </div>
+    </section>
+  </div>
+
+  <div class="flex justify-end gap-4">
+    <a href="admin/settings" class="button button-outline">Cancel</a>
+
+    <button type="submit" class="button" x-ref="submit"
+      :disabled="!isSubmitable" :processing="isProcessing">
+
+      {% include "/snippets/spinner.twig" %}
+
+      Save changes
+
+    </button>
+  </div>
+</form>
+{% endblock %}

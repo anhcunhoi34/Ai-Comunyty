@@ -1,0 +1,88 @@
+{% extends "/layouts/minimal.twig" %}
+
+{% block title 'Signup'|title %}
+{% set xdata = 'auth' %}
+
+{% block template %}
+<div class="py-8 my-10 border border-line-dimmed rounded-xl px-14">
+  <div class="group">
+    <form @submit.prevent="submit" x-ref="form" data-api-path="/signup"
+      class="flex flex-col gap-6">
+      <h1 class="text-lg font-bold">Sign up</h1>
+
+      <div class="grid grid-cols-2 gap-6">
+        <div>
+          <label for="first-name"
+            class="inline-block text-sm font-semibold cursor-pointer">
+            First name
+          </label>
+
+          <div class="mt-2">
+            <input type="text" id="first-name" name="first_name"
+              placeholder="Type your first name" autocomplete="given-name"
+              class="input" required>
+          </div>
+        </div>
+
+        <div>
+          <label for="last-name"
+            class="inline-block text-sm font-semibold cursor-pointer">
+            Last name
+          </label>
+
+          <div class="mt-2">
+            <input type="text" id="last-name" name="last_name"
+              autocomplete="family-name" placeholder="Type your last name"
+              class="input">
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label for="email"
+          class="inline-block text-sm font-semibold cursor-pointer">Email</label>
+
+        <input type="email" id="email" name="email"
+          placeholder="Type your email address" autocomplete="email"
+          class="mt-2 input" required>
+      </div>
+
+      <div>
+        <label for="password"
+          class="inline-block text-sm font-semibold cursor-pointer">Password</label>
+
+        <div class="relative mt-2" x-data="{isVisible: false}">
+          <input :type="isVisible ? 'text' : 'password'" id="password"
+            name="password" placeholder="Type your password"
+            autocomplete="current-password" class="input" required>
+
+          <button type="button"
+            class="absolute text-2xl -translate-y-1/2 top-1/2 right-3 text-content-dimmed"
+            @click="isVisible = !isVisible">
+            <i class="block ti"
+              :class="{'ti-eye-closed' : isVisible, 'ti-eye':!isVisible}"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="w-full button" x-ref="submit"
+        :disabled="!isSubmitable" :processing="isProcessing">
+
+        {% include "/snippets/spinner.twig" %}
+
+        Sign up
+      </button>
+
+      <div class="flex items-center gap-1 text-sm">
+        <i class="text-base ti ti-help-square-rounded"></i>
+        Already have an account?
+        <a href="login" class="font-semibold">Sign in</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="assets/auth.js"></script>
+{% endblock %}

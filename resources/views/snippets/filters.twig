@@ -1,0 +1,72 @@
+<div class="flex items-center gap-4 py-3 border-b mt-7 border-b-line-dimmed">
+  <div class="relative w-64">
+    <i
+      class="absolute left-0 text-2xl -translate-y-1/2 pointer-events-none ti ti-search top-1/2 text-content-dimmed"></i>
+
+    <input type="search" name="query" placeholder="Type to search"
+      class="block w-full h-8 py-1 pl-8 pr-2 text-sm bg-transparent border-none placeholder:text-content-dimmed focus:outline-none focus:ring-0"
+      autocomplete="off" x-model="params.query">
+  </div>
+
+  <span class="block h-4 border-l border-l-line-dimmed"
+    x-show="filters.length > 0"></span>
+
+  <div class="flex items-center gap-2">
+    <template x-for="f in filters">
+      <div class="relative group" x-data :data-selected="params[f.model]"
+        @click.outside="$refs.filter.removeAttribute('data-open')">
+
+        <button
+          class="relative flex items-center gap-1 px-2 py-1 text-sm border border-transparent rounded-lg text-content-dimmed group-data-[selected]:border-line hover:group-data-[selected]:border-line"
+          @click="$refs.filter.toggleAttribute('data-open')">
+          <i
+            class="text-xl ti ti-square-rounded-plus-filled group-data-[selected]:hidden"></i>
+
+          <i class="hidden text-xl text-content ti ti-square-rounded-x-filled group-data-[selected]:block transition-all hover:scale-125 hover:rotate-90"
+            @click.stop="params[f.model]=null"></i>
+
+          <span x-text="f.label"></span>
+          <span class="hidden group-data-[selected]:block">:</span>
+
+
+          <span
+            class="hidden group-data-[selected]:inline text-content font-medium"
+            x-text="f.options.find(o => o.value == params[f.model])?.label"></span>
+
+          <svg
+            class="absolute top-0 left-0 w-full h-full rounded-lg text-line-dimmed group-hover:text-line group-data-[selected]:hidden"
+            width="100%" height="100%" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <rect cx="56" width="100%" height="100%" stroke="currentColor"
+              stroke-dasharray="4 4" rx="8" ry="8" />
+          </svg>
+        </button>
+
+        <div class="context-menu context-menu-bl max-h-72"
+          @click="$el.removeAttribute('data-open')" x-ref="filter">
+          <ul class="text-sm">
+            <template x-for="option in f.options">
+              <li>
+                <button
+                  class="block w-full px-4 py-2 text-left hover:bg-intermediate"
+                  x-text="option.label" @click="params[f.model]=option.value;">
+                </button>
+              </li>
+            </template>
+          </ul>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <div class="ml-auto overflow-hidden">
+    <button
+      class="flex items-center gap-1 text-sm transition-colors text-content-dimmed hover:text-content"
+      :class="isFiltered || 'opacity-0 invisible'" @click="resetFilters()">
+      Reset
+
+      <i class="text-2xl ti ti-x"></i>
+    </button>
+  </div>
+
+</div>

@@ -1,0 +1,273 @@
+{% extends "/layouts/admin.twig" %}
+{% set active_menu = 'settings' %}
+
+{% block submenu %}
+{% include "/sections/submenu/settings.twig" with {active: 'payments'} %}
+{% endblock %}
+
+{% set xdata = 'settings' %}
+{% block title 'Stripe settings'|title %}
+
+{% block template %}
+<form class="max-w-3xl"
+  @submit.prevent="submit"
+  x-ref="form">
+
+  <div x-data="{
+    mode: `{{ option.stripe.mode ?? 'test' }}`,
+    test_secret_key: `{{ option.stripe.test.secret_key ?? '' }}`,
+    test_publishable_key: `{{ option.stripe.test.publishable_key ?? '' }}`,
+    test_webhook_secret: `{{ option.stripe.test.webhook_secret ?? '' }}`,
+    live_secret_key: `{{ option.stripe.live.secret_key ?? '' }}`,
+    live_publishable_key: `{{ option.stripe.live.publishable_key ?? '' }}`,
+    live_webhook_secret: `{{ option.stripe.live.webhook_secret ?? '' }}`,
+  }"
+    class="flex flex-col gap-8">
+
+    <div>
+      <h1 class="text-xl font-bold">
+        Stripe settings
+      </h1>
+    </div>
+
+    <input type="hidden"
+      name="stripe[secret_key]"
+      :value="mode=='live' ? live_secret_key : test_secret_key ">
+
+    <input type="hidden"
+      name="stripe[publishable_key]"
+      :value="mode=='live' ? live_publishable_key : test_publishable_key ">
+
+    <input type="hidden"
+      name="stripe[webhook_secret]"
+      :value="mode=='live' ? live_webhook_secret : test_webhook_secret ">
+
+    <div class="flex flex-col gap-2">
+      <section
+        class="grid grid-cols-1 gap-6 px-16 py-12 border rounded-xl border-line-tertiary">
+
+        <h2 class="text-lg font-bold">Details</h2>
+
+        <div
+          class="flex items-center justify-between p-3 rounded-lg bg-contrast-secondary">
+          Status
+
+          <label class="inline-flex items-center gap-2 cursor-pointer">
+            <input type="checkbox"
+              name="stripe[is_enabled]"
+              class="hidden peer"
+              {{ option.stripe.is_enabled is defined and option.stripe.is_enabled ? 'checked' : '' }}>
+
+            <span
+              class="h-6 w-10 rounded-3xl bg-line-secondary relative block peer-checked:bg-success transition-all after:h-5 after:w-5 after:top-0.5 after:absolute after:left-0 after:ml-0.5 after:transition-all after:rounded-full after:bg-white peer-checked:after:left-4"></span>
+
+            <span class="text-tertiary peer-checked:hidden">
+              Disabled
+            </span>
+
+            <span class="hidden text-success peer-checked:inline">
+              Enabled
+            </span>
+          </label>
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold">Mode</label>
+
+          <div class="flex items-center gap-2 mt-2">
+            <label>
+              <input type="radio"
+                name="stripe[mode]"
+                value="test"
+                class="radio-button"
+                x-model="mode" />
+
+              <span>
+                Test
+              </span>
+            </label>
+
+            <label>
+              <input type="radio"
+                name="stripe[mode]"
+                value="live"
+                class="radio-button"
+                x-model="mode" />
+
+              <span>
+                Live
+              </span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="grid grid-cols-1 gap-6 px-16 py-12 border rounded-xl border-line-tertiary">
+
+        <div class="flex items-center gap-2">
+          <h2 class="text-lg font-bold">
+            Keys
+          </h2>
+
+          <span x-show="mode == 'test'"
+            class="badge">Test mode</span>
+        </div>
+
+        <div>
+          <label for="stripe.live.publishable_key"
+            class="text-sm font-semibold">API publishable key</label>
+
+          <template x-if="mode=='live'">
+            <input type="text"
+              id="stripe.live.publishable_key"
+              name="stripe[live][publishable_key]"
+              class="mt-2 input"
+              autocomplete="off"
+              x-model="live_publishable_key" />
+          </template>
+
+          <template x-if="mode=='test'">
+            <input type="text"
+              id="stripe.test.publishable_key"
+              name="stripe[test][publishable_key]"
+              class="mt-2 input"
+              autocomplete="off"
+              x-model="test_publishable_key" />
+          </template>
+
+          <ul class="m-3 mb-0 text-xs list-disc list-inside text-tertiary">
+            <li class="my-1">
+              Can't find yout API Publishable Key?
+
+              <a :href="mode=='test' ? 'https://dashboard.stripe.com/test/apikeys' : 'https://dashboard.stripe.com/apikeys'"
+                target="_blank"
+                class="text-primary">Click here</a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <label for="stripe.live.secret_key"
+            class="text-sm font-semibold">API secret key</label>
+
+          <template x-if="mode=='live'">
+            <input type="password"
+              id="stripe.live.secret_key"
+              name="stripe[live][secret_key]"
+              class="mt-2 input"
+              autocomplete="new-password"
+              x-model="live_secret_key" />
+          </template>
+
+          <template x-if="mode=='test'">
+            <input type="password"
+              id="stripe.test.secret_key"
+              name="stripe[test][secret_key]"
+              class="mt-2 input"
+              autocomplete="new-password"
+              x-model="test_secret_key" />
+          </template>
+
+          <ul class="m-3 mb-0 text-xs list-disc list-inside text-tertiary">
+            <li class="my-1">
+              Can't find yout API Secret Key?
+
+              <a :href="mode=='test' ? 'https://dashboard.stripe.com/test/apikeys' : 'https://dashboard.stripe.com/apikeys'"
+                target="_blank"
+                class="text-primary">Click here</a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section
+        class="grid grid-cols-1 gap-6 px-16 py-12 border rounded-xl border-line-tertiary">
+
+        <div class="flex items-center gap-2">
+          <h2 class="text-lg font-bold">
+            Webhooks
+          </h2>
+
+          <span x-show="mode == 'test'"
+            class="badge">Test mode</span>
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold">Webhook URL</label>
+
+          <div class="flex items-center mt-2 input">
+            <span is="copyable-element"
+              data-msg="URL copied to clipboard"
+              data-tippy-placement="right"
+              class="badge">{your_domain}/webhooks/stripe</span>
+          </div>
+
+          <ul class="m-3 mb-0 text-xs list-disc list-inside text-tertiary">
+            <li class="my-1">
+              Create a webhook endpoint in your
+              <a :href="mode == 'test' ? 'https://dashboard.stripe.com/test/webhooks' : 'https://dashboard.stripe.com/webhooks'"
+                target="_blank"
+                class="text-primary">Stripe Dashboard</a>
+              with the Webhook URL.
+            </li>
+
+            <li class="my-1">Make sure to select all events</li>
+          </ul>
+        </div>
+
+        <div>
+          <label for="stripe.live.webhook_secret"
+            class="text-sm font-semibold">Webhook secret</label>
+
+          <template x-if="mode=='live'">
+            <input type="password"
+              id="stripe.live.webhook_secret"
+              name="stripe[live][webhook_secret]"
+              class="mt-2 input"
+              autocomplete="new-password"
+              x-model="live_webhook_secret" />
+          </template>
+
+          <template x-if="mode=='test'">
+            <input type="password"
+              id="stripe.test.webhook_secret"
+              name="stripe[test][webhook_secret]"
+              class="mt-2 input"
+              autocomplete="new-password"
+              x-model="test_webhook_secret" />
+          </template>
+
+          <ul class="m-3 mb-0 text-xs list-disc list-inside text-tertiary">
+            <li class="my-1">
+              For more information
+
+              <a href="https://stripe.com/docs/development/dashboard/register-webhook#add-a-webhook-endpoint"
+                target="_blank"
+                class="text-primary">Click here</a>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <div class="flex justify-end gap-4">
+      <a href="admin/settings"
+        class="button button-outline">Cancel</a>
+
+      <button type="submit"
+        class="button"
+        x-ref="submit"
+        :disabled="!isSubmitable"
+        :processing="isProcessing">
+
+        {% include "/snippets/spinner.twig" %}
+
+        Save changes
+
+      </button>
+    </div>
+  </div>
+
+</form>
+{% endblock %}

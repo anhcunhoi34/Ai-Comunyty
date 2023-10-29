@@ -1,0 +1,50 @@
+{% extends "/layouts/minimal.twig" %}
+
+{% block title 'Account Email'|title %}
+{% set xdata = 'account' %}
+
+{% block template %}
+{# Header #}
+<form class="flex flex-col gap-8" data-path="/email" @submit.prevent="submit"
+  x-ref="form">
+
+  <div class="flex flex-col gap-2">
+    <section
+      class="grid grid-cols-1 gap-6 px-16 py-12 border rounded-xl border-line-dimmed">
+
+      <h2 class="text-lg font-bold">Update email</h2>
+
+      <div>
+        <label for="email" class="text-sm font-semibold">Email</label>
+
+        <input type="text" id="email" name="email" class="mt-2 input"
+          value="{{ auth_user.email }}" placeholder="{{ auth_user.email }}"
+          required />
+      </div>
+
+      <div>
+        <label for="password" class="text-sm font-semibold">Password</label>
+
+        <input type="password" id="password" name="password" class="mt-2 input"
+          required />
+      </div>
+
+      <div>
+        <button type="submit" class="w-full button" x-ref="submit"
+          :disabled="!isSubmitable" :processing="isProcessing">
+
+          {% include "/snippets/spinner.twig" %}
+
+          Change email
+        </button>
+      </div>
+    </section>
+  </div>
+</form>
+
+<footer class="mt-10">
+  <div class="text-center">
+    <a href="app/account" class="text-content-dimmed">Go back to account</a>
+  </div>
+</footer>
+{% endblock %}

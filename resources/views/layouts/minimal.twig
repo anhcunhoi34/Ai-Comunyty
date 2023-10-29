@@ -1,0 +1,17 @@
+{% extends "/layouts/base.twig" %}
+
+{% block layout %}
+<div class="container">
+  <div class="max-w-xl mx-auto">
+    {% include "sections/header.twig" with { logo:true, minimal: true } %}
+
+    {% block template %}{% endblock %}
+
+    {% include "/sections/footer.twig" %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="assets/app.js?v={{ version }}"></script>
+{% endblock %}

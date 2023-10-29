@@ -1,0 +1,54 @@
+{% extends "/layouts/admin.twig" %}
+{% set active_menu = 'settings' %}
+
+{% block submenu %}
+{% include "/sections/submenu/settings.twig" with {active: 'openai'} %}
+{% endblock %}
+
+{% set xdata = 'settings' %}
+{% block title 'OpenAI Configuration' %}
+
+{% block template %}
+<form class="flex flex-col max-w-3xl gap-8" @submit.prevent="submit"
+  x-ref="form" data-path="/openai">
+
+  <div>
+    <h1 class="text-xl font-bold">
+      Open AI
+    </h1>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <section
+      class="grid grid-cols-2 gap-6 px-16 py-12 border rounded-xl border-line-dimmed">
+
+      <div class="col-span-2">
+        <h2 class="text-lg font-bold">API</h2>
+      </div>
+
+      <div class="col-span-2">
+        <label class="text-sm font-semibold" for="openai.api_secret_key}">API
+          Secret</label>
+
+        <input class="mt-2 input" id="openai.api_secret_key"
+          name="openai[api_secret_key]" type="password" autocomplete="off"
+          placeholder="Include your Open AI API  secret key"
+          value="{{ environment == 'demo' ? 'hidden-in-demo' : option.openai.api_secret_key ?? '' }}"
+          required>
+      </div>
+    </section>
+  </div>
+
+  <div class="flex justify-end gap-4">
+    <a class="button button-outline" href="admin/settings">Cancel</a>
+
+    <button class="button" type="submit" x-ref="submit"
+      :disabled="!isSubmitable" :processing="isProcessing">
+
+      {% include "/snippets/spinner.twig" %}
+
+      Save changes
+    </button>
+  </div>
+</form>
+{% endblock %}

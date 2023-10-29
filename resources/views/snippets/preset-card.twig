@@ -1,0 +1,42 @@
+{% from "/macros/avatar.twig" import preset_avatar %}
+
+<div
+  class="relative transition-all border-4 border-intermediate hover:bg-transparent rounded-xl group hover:ring-intermediate hover:ring-8 preset-card"
+  data-starred="false">
+
+  <a :href="`app/ai/text-generator/${preset.id}`"
+    class="relative z-20 flex flex-col justify-start min-h-[14.5rem] gap-4 p-6 hover:no-underline">
+    <div class="flex items-center justify-between avatar">
+      {{ preset_avatar() }}
+
+      <template>
+        <button>
+          <i
+            class="ti ti-star text-2xl text-line-dimmed hover:text-line group-data-[starred=true]:hidden"></i>
+          <i
+            class="ti ti-star-filled text-2xl text-[#F3CF6B] hidden group-data-[starred=true]:block hover:text-line"></i>
+        </button>
+      </template>
+    </div>
+
+    <div>
+      <h3 class="font-semibold" x-text="preset.title"></h3>
+
+      <div class="mt-1 text-sm text-content-dimmed">
+        <template x-if="preset.description">
+          <p x-text="preset.description">
+          </p>
+        </template>
+      </div>
+    </div>
+
+    <div class="mt-auto">
+      <template x-if="preset.category">
+        <span
+          class="px-2 py-1 text-xs bg-transparent border rounded-lg border-line text-content"
+          x-text="preset.category.title">
+        </span>
+      </template>
+    </div>
+  </a>
+</div>

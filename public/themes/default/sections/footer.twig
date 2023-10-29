@@ -1,0 +1,55 @@
+<footer class="mb-10 xl:mb-28 wrapper enter">
+  <div class="p-12 bg-contrast-secondary">
+    <div class="items-start justify-between gap-20 md:flex">
+      <div>
+        <img
+          src="{{ option.brand.alternative_logo_dark ?? option.brand.logo_dark ?? '/assets/logo-light.svg' }}"
+          alt="{{ option.site.name ?? 'Logo'  }}"
+          class="hidden group-data-[mode=dark]/html:block  max-w-[140px]">
+
+        <img
+          src="{{ option.brand.alternative_logo ?? option.brand.logo ?? '/assets/logo-dark.svg' }}"
+          alt="{{ option.site.name ?? 'Logo'  }}"
+          class="block group-data-[mode=dark]/html:hidden  max-w-[140px]">
+
+        <div class="mt-6">
+          &copy; {{ 'now' | date('Y') }} All rights reserved.
+
+          {% if option.site.name is defined %}
+          <strong>{{ option.site.name }}</strong>
+          {% endif %}
+        </div>
+      </div>
+
+      <nav class="flex items-start gap-20 mt-6 font-bold md:mt-0">
+        <ul class="flex flex-col gap-4">
+          <li>
+            <a href="/#product">Product</a>
+          </li>
+
+          <li>
+            <a href="/#pricing">Pricing</a>
+          </li>
+
+          <li>
+            <a href="/#faq">FAQ</a>
+          </li>
+        </ul>
+
+        <ul class="flex flex-col gap-4">
+          {% if option.policies.tos is defined and option.policies.tos is not empty %}
+          <li><a href="/policies/terms">Terms of services</a></li>
+          {% endif %}
+
+          {% if option.policies.privacy is defined and option.policies.privacy is not empty %}
+          <li><a href="/policies/privacy">Privacy policy</a></li>
+          {% endif %}
+
+          {% if option.policies.refund is defined and option.policies.refund is not empty %}
+          <li><a href="/policies/refund">Refund policy</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,140 @@
+{% set cls = 'relative flex items-center gap-2 p-2 rounded-lg hover:no-underline hover:text-content' %}
+{% set active_cls = 'text-content' %}
+{% set svg %}
+<svg xmlns="http://www.w3.org/2000/svg"
+  class="absolute w-3 h-3 -translate-y-1/2 top-1/2 -left-2" width="40"
+  height="40" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+  fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path
+    d="M9 6c0 -.852 .986 -1.297 1.623 -.783l.084 .076l6 6a1 1 0 0 1 .083 1.32l-.083 .094l-6 6l-.094 .083l-.077 .054l-.096 .054l-.036 .017l-.067 .027l-.108 .032l-.053 .01l-.06 .01l-.057 .004l-.059 .002l-.059 -.002l-.058 -.005l-.06 -.009l-.052 -.01l-.108 -.032l-.067 -.027l-.132 -.07l-.09 -.065l-.081 -.073l-.083 -.094l-.054 -.077l-.054 -.096l-.017 -.036l-.027 -.067l-.032 -.108l-.01 -.053l-.01 -.06l-.004 -.057l-.002 -12.059z"
+    stroke-width="0" fill="currentColor"></path>
+</svg>
+{% endset %}
+
+<nav
+  class="relative pr-8 mr-8 pb-40 flex flex-col gap-8 after:absolute after:top-0 after:right-0 after:h-full after:w-px after:from-line-dimmed after:to-transparent after:via-line-dimmed after:bg-gradient-to-b after:via-10% shrink-0 w-56">
+
+  <div>
+    <h3 class="pl-2 text-lg font-bold">Settings</h3>
+
+    <ul class="my-4 font-medium text-intermediate-content">
+      <li>
+        <a href="admin/settings/general"
+          class="{{ cls }} {{ active == 'general' ? active_cls : '' }}">
+
+          {% if active == 'general' %}
+          {{ svg }}
+          {% endif %}
+
+          <i class="text-2xl ti ti-settings-2"></i>
+          General
+        </a>
+      </li>
+
+      <li>
+        <a href="admin/settings/brand"
+          class="{{ cls }} {{ active == 'brand' ? active_cls : '' }}">
+
+          {% if active == 'brand' %}
+          {{ svg }}
+          {% endif %}
+
+          <i class="text-2xl ti ti-brand-abstract"></i>
+          Brand
+        </a>
+      </li>
+
+      <li>
+        <a href="admin/settings/billing"
+          class="{{ cls }} {{ active == 'billing' ? active_cls : '' }}">
+
+          {% if active == 'billing' %}
+          {{ svg }}
+          {% endif %}
+
+          <i class="text-2xl ti ti-file-invoice"></i>
+          Billing
+        </a>
+      </li>
+
+      <li>
+        <a href="admin/settings/payments"
+          class="{{ cls }} {{ active == 'payments' ? active_cls : '' }}">
+
+          {% if active == 'payments' %}
+          {{ svg }}
+          {% endif %}
+
+          <i class="text-2xl ti ti-cash"></i>
+          Payments
+        </a>
+      </li>
+
+      <li>
+        <a href="admin/settings/policies"
+          class="{{ cls }} {{ active == 'policies' ? active_cls : '' }}">
+
+          {% if active == 'policies' %}
+          {{ svg }}
+          {% endif %}
+
+          <i class="text-2xl ti ti-shield-check"></i>
+          Policies
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div>
+    <h3 class="pl-2 text-lg font-bold mt-">Email</h3>
+
+    <ul class="my-4 font-medium text-intermediate-content">
+      <li>
+        <a href="admin/settings/mail"
+          class="{{ cls }} {{ active == 'mail' ? active_cls : '' }}">
+
+          {% if active == 'mail' %}
+          {{ svg }}
+          {% endif %}
+
+          <i class="text-2xl ti ti-at"></i>
+          Mail
+        </a>
+      </li>
+
+      <li>
+        <a href="admin/settings/smtp"
+          class="{{ cls }} {{ active == 'smtp' ? active_cls : '' }}">
+
+          {% if active == 'smtp' %}
+          {{ svg }}
+          {% endif %}
+
+          <i class="text-2xl ti ti-server-cog"></i>
+          SMTP
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div>
+    <h3 class="pl-2 text-lg font-bold mt-">Integrations</h3>
+
+    <ul class="my-4 font-medium text-intermediate-content">
+      <li>
+        <a href="admin/settings/openai"
+          class="{{ cls }} {{ active == 'openai' ? active_cls : '' }}">
+
+          {% if active == 'openai' %}
+          {{ svg }}
+          {% endif %}
+
+          <i class="text-2xl ti ti-brand-openai"></i>
+          Open AI
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</nav>

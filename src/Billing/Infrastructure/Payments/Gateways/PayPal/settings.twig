@@ -1,0 +1,266 @@
+{% extends "/layouts/admin.twig" %}
+{% set active_menu = 'settings' %}
+
+{% block submenu %}
+{% include "/sections/submenu/settings.twig" with {active: 'payments'} %}
+{% endblock %}
+
+{% set xdata = 'settings' %}
+{% block title 'Paypal settings'|title %}
+
+{% block template %}
+<form class="max-w-3xl"
+  @submit.prevent="submit"
+  x-ref="form"
+  autocomplete="off">
+
+  <div x-data="{
+    mode: `{{ option.paypal.mode ?? 'sandbox' }}`,
+    sandbox_secret_key: `{{ option.paypal.sandbox.secret_key ?? '' }}`,
+    sandbox_client_id: `{{ option.paypal.sandbox.client_id ?? '' }}`,
+    sandbox_webhook_id: `{{ option.paypal.sandbox.webhook_id ?? '' }}`,
+    live_secret_key: `{{ option.paypal.live.secret_key ?? '' }}`,
+    live_client_id: `{{ option.paypal.live.client_id ?? '' }}`,
+    live_webhook_id: `{{ option.paypal.live.webhook_id ?? '' }}`,
+  }"
+    class="flex flex-col gap-8">
+
+    <div>
+      <h1 class="text-xl font-bold">
+        Paypal settings
+      </h1>
+    </div>
+
+    <input type="hidden"
+      name="paypal[secret_key]"
+      :value="mode=='live' ? live_secret_key : sandbox_secret_key ">
+
+    <input type="hidden"
+      name="paypal[client_id]"
+      :value="mode=='live' ? live_client_id : sandbox_client_id ">
+
+    <input type="hidden"
+      name="paypal[webhook_id]"
+      :value="mode=='live' ? live_webhook_id : sandbox_webhook_id ">
+
+    <div class="flex flex-col gap-2">
+      <section
+        class="grid grid-cols-1 gap-6 px-16 py-12 border rounded-xl border-line-tertiary">
+
+        <h2 class="text-lg font-bold">Details</h2>
+
+        <div
+          class="flex items-center justify-between p-3 rounded-lg bg-contrast-secondary">
+          Status
+
+          <label class="inline-flex items-center gap-2 cursor-pointer">
+            <input type="checkbox"
+              name="paypal[is_enabled]"
+              class="hidden peer"
+              {{ option.paypal.is_enabled is defined and option.paypal.is_enabled ? 'checked' : '' }}>
+
+            <span
+              class="h-6 w-10 rounded-3xl bg-line-secondary relative block peer-checked:bg-success transition-all after:h-5 after:w-5 after:top-0.5 after:absolute after:left-0 after:ml-0.5 after:transition-all after:rounded-full after:bg-white peer-checked:after:left-4"></span>
+
+            <span class="text-tertiary peer-checked:hidden">
+              Disabled
+            </span>
+
+            <span class="hidden text-success peer-checked:inline">
+              Enabled
+            </span>
+          </label>
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold">Mode</label>
+
+          <div class="flex items-center gap-2 mt-2">
+            <label>
+              <input type="radio"
+                name="paypal[mode]"
+                value="sandbox"
+                class="radio-button"
+                x-model="mode" />
+
+              <span>
+                Sandbox
+              </span>
+            </label>
+
+            <label>
+              <input type="radio"
+                name="paypal[mode]"
+                value="live"
+                class="radio-button"
+                x-model="mode" />
+
+              <span>
+                Live
+              </span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="grid grid-cols-1 gap-6 px-16 py-12 border rounded-xl border-line-tertiary">
+
+        <div class="flex items-center gap-2">
+          <h2 class="text-lg font-bold">
+            Keys
+          </h2>
+
+          <span x-show="mode == 'sandbox'"
+            class="badge">Sandbox mode</span>
+        </div>
+
+        <div>
+          <label for="paypal.live.client_id"
+            class="text-sm font-semibold">Client ID</label>
+
+          <template x-if="mode=='live'">
+            <input type="text"
+              id="paypal.live.client_id"
+              name="paypal[live][client_id]"
+              class="mt-2 input"
+              autocomplete="off"
+              x-model="live_client_id" />
+          </template>
+
+          <template x-if="mode=='sandbox'">
+            <input type="text"
+              id="paypal.sandbox.client_id"
+              name="paypal[sandbox][client_id]"
+              class="mt-2 input"
+              autocomplete="off"
+              x-model="sandbox_client_id" />
+          </template>
+
+          <ul class="m-3 mb-0 text-xs list-disc list-inside text-tertiary">
+            <li class="my-1">
+              Can't find yout Client ID?
+
+              <a href="https://developer.paypal.com/api/rest/#link-getclientidandclientsecret"
+                target="_blank"
+                class="text-primary">Click here</a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <label for="paypal.live.secret_key"
+            class="text-sm font-semibold">API secret key</label>
+
+          <template x-if="mode=='live'">
+            <input type="password"
+              id="paypal.live.secret_key"
+              name="paypal[live][secret_key]"
+              class="mt-2 input"
+              autocomplete="new-password"
+              x-model="live_secret_key" />
+          </template>
+
+          <template x-if="mode=='sandbox'">
+            <input type="password"
+              id="paypal.sandbox.secret_key"
+              name="paypal[sandbox][secret_key]"
+              class="mt-2 input"
+              autocomplete="new-password"
+              x-model="sandbox_secret_key" />
+          </template>
+
+          <ul class="m-3 mb-0 text-xs list-disc list-inside text-tertiary">
+            <li class="my-1">
+              Can't find yout API Secret Key?
+
+              <a href="https://developer.paypal.com/api/rest/#link-getclientidandclientsecret"
+                target="_blank"
+                class="text-primary">Click here</a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section
+        class="grid grid-cols-1 gap-6 px-16 py-12 border rounded-xl border-line-tertiary">
+
+        <div class="flex items-center gap-2">
+          <h2 class="text-lg font-bold">
+            Webhooks
+          </h2>
+
+          <span x-show="mode == 'sandbox'"
+            class="badge">Sandbox mode</span>
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold">Webhook URL</label>
+
+          <div class="flex items-center mt-2 input">
+            <span is="copyable-element"
+              data-msg="URL copied to clipboard"
+              data-tippy-placement="right"
+              class="badge">{your_domain}/webhooks/paypal</span>
+          </div>
+
+          <ul class="m-3 mb-0 text-xs list-disc list-inside text-tertiary">
+            <li class="my-1">
+              Create a webhook endpoint in your
+              <a :href="mode == 'sandbox' ? 'https://developer.paypal.com/dashboard/applications/sandbox' : 'https://developer.paypal.com/dashboard/applications/'"
+                target="_blank"
+                class="text-primary">PayPal Developer Dashboard</a>
+              with the Webhook URL.
+            </li>
+
+            <li class="my-1">Make sure to subscribe to All Events</li>
+          </ul>
+        </div>
+
+        <div>
+          <label for="paypal.live.webhook_id"
+            class="text-sm font-semibold">Webhook ID</label>
+
+          <template x-if="mode=='live'">
+            <input type="text"
+              id="paypal.live.webhook_id"
+              name="paypal[live][webhook_id]"
+              class="mt-2 input"
+              autocomplete="off"
+              x-model="live_webhook_id" />
+          </template>
+
+          <template x-if="mode=='sandbox'">
+            <input type="text"
+              id="paypal.sandbox.webhook_id"
+              name="paypal[sandbox][webhook_id]"
+              class="mt-2 input"
+              autocomplete="off"
+              x-model="sandbox_webhook_id" />
+          </template>
+
+
+        </div>
+      </section>
+    </div>
+
+    <div class="flex justify-end gap-4">
+      <a href="admin/settings"
+        class="button button-outline">Cancel</a>
+
+      <button type="submit"
+        class="button"
+        x-ref="submit"
+        :disabled="!isSubmitable"
+        :processing="isProcessing">
+
+        {% include "/snippets/spinner.twig" %}
+
+        Save changes
+
+      </button>
+    </div>
+  </div>
+
+</form>
+{% endblock %}

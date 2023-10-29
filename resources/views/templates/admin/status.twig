@@ -1,0 +1,164 @@
+{% extends "/layouts/admin.twig" %}
+
+{% set active_menu = 'status' %}
+
+{% set xdata %}
+{% endset %}
+
+{% block title 'Status'|title %}
+
+{% block template %}
+<div>
+  <h1 class="text-2xl font-bold">Status</h1>
+
+  <div class="grid grid-cols-3 gap-6 mt-8">
+    <div
+      class="flex items-center justify-between p-4 border rounded-xl border-line-dimmed">
+      <div class="flex items-center gap-4">
+        <span
+          class="flex items-center justify-center w-10 h-10 text-2xl rounded-full {{ debug ? 'text-alert bg-alert/25' : 'text-success bg-success/25' }}">
+          <i
+            class="ti ti-{{ debug ? 'alert-square-rounded' : 'square-rounded-check' }}"></i>
+        </span>
+
+        <div>
+          <h3 class="text-lg font-bold">Debug Mode</h3>
+          <p class="mt-1 text-sm text-content-dimmed">
+            {{ debug ? 'On' : 'Off' }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="flex items-center justify-between p-4 border rounded-xl border-line-dimmed">
+      <div class="flex items-center gap-4">
+        <span
+          class="flex items-center justify-center w-10 h-10 text-2xl rounded-full {{ environment == 'prod' ? 'text-success bg-success/25' : 'text-failure bg-failure/25' }}">
+          <i
+            class="ti ti-{{ environment == 'prod' ? 'square-rounded-check' : 'square-rounded-x' }}"></i>
+        </span>
+
+        <div>
+          <h3 class="text-lg font-bold">Environment</h3>
+          <p class="mt-1 text-sm text-content-dimmed">
+            {{ environment }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="flex items-center justify-between p-4 border rounded-xl border-line-dimmed">
+      <div class="flex items-center gap-4">
+        <span
+          class="flex items-center justify-center w-10 h-10 text-2xl rounded-full {{ database ? 'text-success bg-success/25' : 'text-failure bg-failure/25' }}">
+          <i
+            class="ti ti-{{ database ? 'square-rounded-check' : 'square-rounded-x' }}"></i>
+        </span>
+
+        <div>
+          <h3 class="text-lg font-bold">Database</h3>
+          <p class="mt-1 text-sm text-content-dimmed">
+            {% if database %}
+            Connection established
+            {% else %}
+            Connection failed
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="flex items-center justify-between p-4 border rounded-xl border-line-dimmed">
+      <div class="flex items-center gap-4">
+        <span
+          class="flex items-center justify-center w-10 h-10 text-2xl rounded-full {{ file_uploads ? 'text-success bg-success/25' : 'text-failure bg-failure/25' }}">
+          <i
+            class="ti ti-{{ file_uploads ? 'square-rounded-check' : 'square-rounded-x' }}"></i>
+        </span>
+
+        <div>
+          <h3 class="text-lg font-bold">File uploads</h3>
+          <p class="mt-1 text-sm text-content-dimmed">
+            {% if file_uploads %}
+            On
+            {% else %}
+            Off
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="flex items-center justify-between p-4 border rounded-xl border-line-dimmed">
+      <div class="flex items-center gap-4">
+        <span
+          class="flex items-center justify-center w-10 h-10 text-2xl rounded-full text-content bg-intermediate">
+          <i class="ti ti-info-square-rounded"></i>
+        </span>
+
+        <div>
+          <h3 class="text-lg font-bold">Post max size</h3>
+          <p class="mt-1 text-sm text-content-dimmed">
+            {{ post_max_size }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="flex items-center justify-between p-4 border rounded-xl border-line-dimmed">
+      <div class="flex items-center gap-4">
+        <span
+          class="flex items-center justify-center w-10 h-10 text-2xl rounded-full text-content bg-intermediate">
+          <i class="ti ti-info-square-rounded"></i>
+        </span>
+
+        <div>
+          <h3 class="text-lg font-bold">Upload max filesize</h3>
+          <p class="mt-1 text-sm text-content-dimmed">
+            {{ upload_max_filesize }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="flex items-center justify-between p-4 border rounded-xl border-line-dimmed">
+      <div class="flex items-center gap-4">
+        <span
+          class="flex items-center justify-center w-10 h-10 text-2xl rounded-full text-content bg-intermediate">
+          <i class="ti ti-info-square-rounded"></i>
+        </span>
+
+        <div>
+          <h3 class="text-lg font-bold">Memory limit</h3>
+          <p class="mt-1 text-sm text-content-dimmed">
+            {{ memory_limit }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="flex items-center justify-between p-4 border rounded-xl border-line-dimmed">
+      <div class="flex items-center gap-4">
+        <span
+          class="flex items-center justify-center w-10 h-10 text-2xl rounded-full text-content bg-intermediate">
+          <i class="ti ti-info-square-rounded"></i>
+        </span>
+
+        <div>
+          <h3 class="text-lg font-bold">Disk space</h3>
+          <p class="mt-1 text-sm text-content-dimmed">
+            {{ '%s of %s is free'|format(disk_free_space == null ? '-' : disk_free_space, disk_total_space == null ? '-' : disk_total_space) }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

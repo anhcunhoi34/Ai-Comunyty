@@ -1,0 +1,85 @@
+<div>
+  <div class="flex items-center justify-between px-4 py-6">
+    <div class="flex items-center h-10">
+      <a href="admin">
+        <img src="{{ option.brand.logo_dark ?? '/assets/logo-light.svg' }}"
+          alt="{{ option.site.name ?? 'Logo'  }}"
+          class="hidden group-data-[mode=dark]/html:block max-w-[140px] h-8 object-contain object-left">
+
+        <img src="{{ option.brand.logo ?? '/assets/logo-dark.svg' }}"
+          alt="{{ option.site.name ?? 'Logo'  }}"
+          class="block group-data-[mode=dark]/html:hidden  max-w-[140px] h-8 object-contain object-left">
+      </a>
+    </div>
+
+    <button class="hidden text-xl">
+      <i class="ti ti-transition-left"></i>
+    </button>
+  </div>
+
+  <nav class="flex flex-col gap-8 px-4 my-4 text-intermediate-content">
+
+    {% set cls = 'flex items-center gap-2 p-2 rounded-lg transition hover:bg-main hover:no-underline hover:text-content dark:hover:bg-[#040505]' %}
+    {% set active = 'bg-main no-underline text-content dark:bg-[#040505]' %}
+
+    <ul>
+      <li class="my-0.5">
+        <a href="admin"
+          class="{{ cls }} {{ active_menu == 'dashboard' ? active : '' }}">
+          <i class="text-2xl ti ti-home"></i>
+          Dashboard
+        </a>
+      </li>
+
+      <li class="my-0.5">
+        <a href="admin/templates"
+          class="{{ cls }} {{ active_menu == 'templates' ? active : '' }}">
+          <i class="text-2xl ti ti-stack"></i>
+          Templates
+        </a>
+      </li>
+
+      <li class="my-0.5">
+        <a href="admin/categories"
+          class="{{ cls }} {{ active_menu == 'categories' ? active : '' }}">
+          <i class="text-2xl ti ti-category"></i>
+          Categories
+        </a>
+      </li>
+
+      <li class="my-0.5">
+        <a href="admin/plans"
+          class="{{ cls }} {{ active_menu == 'plans' ? active : '' }}">
+          <i class="text-2xl ti ti-coins"></i>
+          Plans
+        </a>
+      </li>
+
+      <li class="my-0.5">
+        <a href="admin/users"
+          class="{{ cls }} {{ active_menu == 'users' ? active : '' }}">
+          <i class="text-2xl ti ti-users"></i>
+          Users
+        </a>
+      </li>
+    </ul>
+
+    <ul>
+      <li class="my-0.5">
+        <a href="admin/settings"
+          class="{{ cls }} {{ active_menu == 'settings' ? active : '' }}">
+          <i class="text-2xl ti ti-settings"></i>
+          Settings
+        </a>
+      </li>
+
+      <li class="my-0.5">
+        <a href="admin/status"
+          class="{{ cls }} {{ active_menu == 'status' ? active : '' }}">
+          <i class="text-2xl ti ti-broadcast"></i>
+          Site health
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>
